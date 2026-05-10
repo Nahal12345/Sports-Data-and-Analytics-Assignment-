@@ -1204,8 +1204,8 @@ ivorycoast_manager_comparison <- afcon_matches %>%
 
 ivorycoast_manager_comparison <- ivorycoast_manager_comparison %>% 
   mutate(manager = case_when(
-    stage == "Group Stage" ~ "Manager 1",
-    stage == "Knockout" ~ "Manager 2"
+    stage == "Group Stage" ~ "Jean-Louis Gasset",
+    stage == "Knockout" ~ "Emerse Faé"
   ))
 
 #############################################################################################################################
@@ -1225,7 +1225,7 @@ ivorycoast_managers_shotscondeded_xgagainst <- afcon_matches %>%
            away_team.away_team_name == "Côte d'Ivoire") %>%
   select(match_id, competition_stage.name) %>%
   mutate(stage = if_else(competition_stage.name == "Group Stage", 
-                         "Jean-Louis Gasset", "Emerse Faé")) %>%
+                         "Group Stage", "Knockout")) %>%
   left_join(
     all_events %>%
       filter(type.name == "Shot", team.name != "Côte d'Ivoire", period != 5) %>%
@@ -1243,16 +1243,58 @@ ivorycoast_managers_shotscondeded_xgagainst <- afcon_matches %>%
     xg_conceded    = round(sum(xg_conceded, na.rm = TRUE), 2),
     shots_conceded_per_game = round(shots_conceded / matches, 1),
     xg_conceded_per_game    = round(xg_conceded / matches, 2)
-  ) 
+  ) %>% 
+  mutate(manager = case_when(
+    stage == "Group Stage" ~ "Jean-Louis Gasset",
+    stage == "Knockout" ~ "Emerse Faé"
+  ))
 
 
 
 
-# Attacking transitions
+# Attacking areas focus 
+
+
+
 
 
 # Shot quality vs quantity 
 
+shotquality_vs_quantity <- afcon_matches %>%
+  filter(home_team.home_team_name == "Côte d'Ivoire" | 
+           away_team.away_team_name == "Côte d'Ivoire") %>%
+  select(match_id, competition_stage.name) %>%
+  mutate(manager = if_else(competition_stage.name == "Group Stage",
+                           "Jean-Louis Gasset", "Emerse Faé")) %>%
+  left_join(
+    all_events %>%
+      filter(type.name == "Shot", 
+             team.name == "Côte d'Ivoire",
+             period != 5) %>%
+      group_by(match_id) %>%
+      summarise(
+        total_shots     = n(),
+        shots_on_target = sum(shot.outcome.name %in% c("Saved", "Goal"), na.rm = TRUE),
+        total_xg        = round(sum(shot.statsbomb_xg, na.rm = TRUE), 2),
+        avg_xg_per_shot = round(mean(shot.statsbomb_xg, na.rm = TRUE), 3),
+        goals           = sum(shot.outcome.name == "Goal", na.rm = TRUE)
+      ),
+    by = "match_id"
+  ) %>%
+  group_by(manager) %>%
+  summarise(
+    matches         = n(),
+    total_shots     = sum(total_shots,     na.rm = TRUE),
+    shots_on_target = sum(shots_on_target, na.rm = TRUE),
+    total_xg        = round(sum(total_xg,  na.rm = TRUE), 2),
+    goals           = sum(goals,           na.rm = TRUE),
+    shots_per_game  = round(total_shots     / matches, 1),
+    avg_xg_per_shot = round(total_xg        / total_shots, 3),
+    shot_accuracy   = round(shots_on_target / total_shots * 100, 1)
+  ) %>%
+  arrange(desc(avg_xg_per_shot))
+
+ivorycoast_shot_quality
 
 # Physical intensity -> pressures, sprints, duels 
 
@@ -1260,6 +1302,42 @@ ivorycoast_managers_shotscondeded_xgagainst <- afcon_matches %>%
 
 # Set piece efficiency -> goals, shots, shots on targets, big chances 
 
+ivorycoast_setpiece_efficiency <- afcon_matches %>%
+  filter(home_team.home_team_name == "Côte d'Ivoire" | 
+           away_team.away_team_name == "Côte d'Ivoire") %>%
+  select(match_id, competition_stage.name) %>%
+  mutate(manager = if_else(competition_stage.name == "Group Stage",
+                           "Jean-Louis Gasset", "Emerse Faé")) %>%
+  left_join(
+    all_events %>%
+      filter(type.name == "Shot",
+             team.name == "Côte d'Ivoire",
+             period != 5,
+             shot.type.name %in% c("Free Kick", "Corner", "Penalty")) %>%
+      group_by(match_id) %>%
+      summarise(
+        setpiece_shots     = n(),
+        setpiece_sot       = sum(shot.outcome.name %in% c("Saved", "Goal"), na.rm = TRUE),
+        setpiece_goals     = sum(shot.outcome.name == "Goal",               na.rm = TRUE),
+        setpiece_bigchance = sum(shot.statsbomb_xg > 0.3,                   na.rm = TRUE),
+        setpiece_xg        = round(sum(shot.statsbomb_xg, na.rm = TRUE), 2)
+      ),
+    by = "match_id"
+  ) %>%
+  group_by(manager) %>%
+  summarise(
+    matches            = n(),
+    setpiece_shots     = sum(setpiece_shots,     na.rm = TRUE),
+    setpiece_sot       = sum(setpiece_sot,       na.rm = TRUE),
+    setpiece_goals     = sum(setpiece_goals,      na.rm = TRUE),
+    setpiece_bigchance = sum(setpiece_bigchance,  na.rm = TRUE),
+    setpiece_xg        = round(sum(setpiece_xg,  na.rm = TRUE), 2),
+    shots_per_game     = round(setpiece_shots / matches, 1),
+    xg_per_game        = round(setpiece_xg    / matches, 2),
+    conversion_rate    = round(setpiece_goals  / ifelse(setpiece_shots == 0, 1, setpiece_shots) * 100, 1),
+    sot_pct            = round(setpiece_sot    / ifelse(setpiece_shots == 0, 1, setpiece_shots) * 100, 1)
+  ) %>%
+  arrange(desc(setpiece_goals))
 
 
 #############################################################################################################################
@@ -1268,9 +1346,99 @@ ivorycoast_managers_shotscondeded_xgagainst <- afcon_matches %>%
 
 # Shot map of best performing attackers 
 
+# Get top 5 Ivory Coast shooters across all their matches
+ivorycoast_top5_shooters <- all_events %>%
+  filter(type.name == "Shot", team.name == "Côte d'Ivoire", period != 5) %>%
+  count(player.name, sort = TRUE) %>%
+  slice_head(n = 5)
+
+ivorycoast_top5_shooters <- all_events %>%
+  filter(type.name == "Shot", team.name == "Côte d'Ivoire", period != 5) %>%
+  mutate(
+    x     = sapply(location,          `[[`, 1),
+    y     = sapply(location,          `[[`, 2),
+    end_x = sapply(shot.end_location, `[[`, 1),
+    end_y = sapply(shot.end_location, `[[`, 2)
+  ) %>%
+  mutate(
+    shot_type = case_when(
+      shot.outcome.name == "Goal"          ~ "Goal",
+      shot.outcome.name == "Saved"         ~ "Saved",
+      shot.outcome.name == "Saved to Post" ~ "Saved",
+      shot.outcome.name == "Blocked"       ~ "Blocked",
+      TRUE                                 ~ "Off Target"
+    ),
+    is_goal = shot.outcome.name == "Goal"
+  ) %>%
+  group_by(player.name) %>%
+  mutate(total_shots = n()) %>%
+  ungroup() %>%
+  filter(player.name %in% (count(., player.name, sort = TRUE) %>% 
+                             slice_head(n = 5) %>% 
+                             pull(player.name)))
+
+view(ivorycoast_top5_shooters)
+
+final_shotmap <- ggplot(ivorycoast_top5_shooters) +
+  draw_pitch() +
+  geom_segment(
+    data      = filter(ivorycoast_top5_shooters, is_goal),
+    aes(x = x, y = y, xend = end_x, yend = end_y),
+    color     = "white",
+    linewidth = 0.7,
+    linetype  = "dashed",
+    alpha     = 0.9,
+    arrow     = arrow(length = unit(0.18, "cm"), type = "open")
+  ) +
+  geom_point(
+    data   = filter(ivorycoast_top5_shooters, !is_goal),
+    aes(x = x, y = y, color = shot_type),
+    fill   = NA,
+    size   = 3,
+    shape  = 21,
+    stroke = 1.2,
+    alpha  = 0.85
+  ) +
+  geom_point(
+    data   = filter(ivorycoast_top5_shooters, is_goal),
+    aes(x = x, y = y),
+    color  = "white",
+    fill   = "white",
+    size   = 4.5,
+    shape  = 21,
+    stroke = 1.5
+  ) +
+  scale_color_manual(values = outcome_colours, guide = "none") +
+  coord_flip(xlim = c(58, 123), ylim = c(0, 80), expand = FALSE) +
+  scale_x_continuous() +
+  scale_y_reverse() +
+  facet_wrap(~player.name, ncol = 3) +
+  labs(
+    title    = "Côte d'Ivoire — Top 5 Shooters Shot Map",
+    subtitle = "○ Off Target / Blocked  ·  ● Saved  ·  ● Goal",
+    caption  = "Data: StatsBomb  |  Excludes penalties"
+  ) +
+  theme_void(base_size = 12) +
+  theme(
+    plot.background  = element_rect(fill = "#1e1e2e", color = NA),
+    panel.background = element_rect(fill = "#1e1e2e", color = NA),
+    plot.title       = element_text(color = "#f0f0f0", face = "bold",
+                                    hjust = 0.5, size = 16,
+                                    margin = margin(t = 14, b = 4)),
+    plot.subtitle    = element_text(color = "#aaaaaa", hjust = 0.5,
+                                    size = 10, margin = margin(b = 10)),
+    plot.caption     = element_text(color = "#666666", hjust = 0.98,
+                                    size = 9, margin = margin(t = 6, b = 10)),
+    strip.text       = element_text(color = "white", face = "bold",
+                                    size = 11, margin = margin(b = 6)),
+    plot.margin      = margin(10, 20, 10, 20)
+  )
 
 
 # Expected goals graph, highlight ivory coast pkayers compared to the rest of the players in the tourney 
+
+
+
 
 
 # Table of goals and assists for ivoru coast 
@@ -1278,11 +1446,40 @@ ivorycoast_managers_shotscondeded_xgagainst <- afcon_matches %>%
 
 # Dribbling stats 
 
+dribbling_stats <- all_events %>%
+  filter(team.name == "Côte d'Ivoire", type.name == "Dribble") %>%
+  group_by(player.name) %>%
+  summarise(
+    attempted  = n(),
+    completed  = sum(dribble.outcome.name == "Complete", na.rm = TRUE),
+    failed = sum(dribble.outcome.name == "Incomplete", na.rm = TRUE),
+    success_pct = round(completed / attempted * 100, 1)
+  ) %>%
+  arrange(desc(completed))
+
+dribbling_stats
 
 # Shot creating actions
 
 
 # Defensive actions -> tackles, blocks etc 
+
+tackle_stats <- all_events %>%
+  filter(team.name == "Côte d'Ivoire", 
+         type.name == "Duel",
+         duel.type.name == "Tackle") %>%
+  group_by(player.name) %>%
+  summarise(
+    attempted       = n(),
+    won             = sum(duel.outcome.name == "Won",             na.rm = TRUE),
+    lost_in_play    = sum(duel.outcome.name == "Lost In Play",    na.rm = TRUE),
+    lost_out        = sum(duel.outcome.name == "Lost Out",        na.rm = TRUE),
+    success_out     = sum(duel.outcome.name == "Success Out",     na.rm = TRUE),
+    success_in_play = sum(duel.outcome.name == "Success In Play", na.rm = TRUE),
+    success_pct     = round((won + success_out + success_in_play) / attempted * 100, 1)
+  ) %>%
+  arrange(desc(attempted))
+
 
 # Chnace creation zones per player
 
