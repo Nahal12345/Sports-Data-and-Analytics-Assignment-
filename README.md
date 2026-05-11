@@ -2,7 +2,7 @@
 
 An interactive dashboard exploring how Ivory Coast won AFCON 2023 despite changing their manager after the group stages. It also analyses who deserved to win.
 
-**Live dashboard:** <https://YOUR-USERNAME.github.io/nba-analytics/>
+**Live dashboard:** <https://github.com/Nahal12345/Sports-Data-and-Analytics-Assignment/>
 
 Built with R, Shiny, and `bslib`, published to GitHub Pages via [Shinylive](https://shinylive.io/r/) — the app runs entirely in the visitor's browser, with no server.
 
