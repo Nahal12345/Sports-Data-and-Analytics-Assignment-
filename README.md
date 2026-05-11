@@ -8,8 +8,6 @@ Built with R, Shiny, and `bslib`, published to GitHub Pages via [Shinylive](http
 
 ## Data
 
-Shot-level data pulled from the NBA Stats API via the [`hoopR`](https://hoopr.sportsdataverse.org/) package.
-
 Football Event data pulled from StatsbombR via devtools::install_github("statsbomb/StatsBombR") package
 
 ## Repository layout
