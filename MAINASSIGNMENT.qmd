@@ -1,0 +1,45 @@
+---
+title: "How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and was it deserved?"
+author: "Your Name (Student ID)"
+date: today
+format:
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+## My Resources
+
+**Live dashboard:** <https://YOUR-USERNAME.github.io/nba-analytics/>
+
+**Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>\
+
+## 1. Introduction
+
+AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerese Faé, who was the Ivory Coast under 23 coach.
+
+Following this there was an unexpected revival, with Ivory Coast which led to AFCON victory. Faé's side beat Senegal in the Round of 16, Mali in the Quarter Final, Democratic Republic of Congo in the Semi Final, and then defeated Nigeria in the final, which was one of the team's that they had previously lost to in the group stage. They didn't only just beat them, they beat them convincingly as they dominated the final. The transformation between the two managers was visible, but the question that this report seeks to answer is whether the data supports the outcome: How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and was it deserved?
+
+The question is interesting because football tournaments can be won due to pure luck and individual brilliance whilst also posting poor underlying numbers. On the contrast, a dominant team can lose to a single moment . Expected Goals (xG), defensive action metrics, attacking metrics and shot quality data offers a way to cut through the narrative and allows us to analyse what exactly is happening with the players on the pitch.
+
+The dashboard and the accompanying analysis is structured around the comparison between the group stage performance under Jean-Louis Gasset and the Knockout Stage performance under Emerese Faé, which individual players drove the improvement, and underlying data suggesting whether the title was deserved. The data that has been used throughout this report was sourced from StatsBomb's open data repository, which has provided event-level data for the AFCON data. The dashboard is hosted publicly on GitHub Pages and built using R, ggplot2 and Plotly, with the full code available in the repository that has been linked.
+
+## 2. Data Collection and Preparation
+
+### 2.1 Data Source 
+
+All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted.
+
+The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events.
+
+## 4. Findings 
+
+### 4.1 Tournament Overview and the Group Stage Struggle 
+
+Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. Table x summarise the full tournament record:
+
+INSERT TOURNAMENT JOURNEY
+
+The underlying xG
+
+## References
