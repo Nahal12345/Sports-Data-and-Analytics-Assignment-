@@ -14,7 +14,7 @@ format:
 
 **Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>\
 
-## 1. Introduction
+## [1. Introduction]{.underline}
 
 AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerese Faé, who was the Ivory Coast under 23 coach.
 
@@ -24,22 +24,58 @@ The question is interesting because football tournaments can be won due to pure 
 
 The dashboard and the accompanying analysis is structured around the comparison between the group stage performance under Jean-Louis Gasset and the Knockout Stage performance under Emerese Faé, which individual players drove the improvement, and underlying data suggesting whether the title was deserved. The data that has been used throughout this report was sourced from StatsBomb's open data repository, which has provided event-level data for the AFCON data. The dashboard is hosted publicly on GitHub Pages and built using R, ggplot2 and Plotly, with the full code available in the repository that has been linked.
 
-## 2. Data Collection and Preparation
+## [2. Data Collection and Preparation]{.underline}
 
-### 2.1 Data Source 
+### [2.1 Data Source]{.underline} 
 
 All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted.
 
 The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events.
 
-## 4. Findings 
+## [4. Findings]{.underline} 
 
-### 4.1 Tournament Overview and the Group Stage Struggle 
+### [4.1 Tournament Overview and the Group Stage Struggle]{.underline} 
 
-Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. Table x summarise the full tournament record:
+Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. During the knockout stages, Ivory Coast won three games and drew one, which they won on penalties. They had performed at a much higher standard, and that will be analysed later in this section. Table x summarises Ivory Coast's full tournament timeline, showing who they had faced, what the score was and what the result of the game was.
 
-INSERT TOURNAMENT JOURNEY
+```{r}
+#| label: ivory_coast_timeline
+#| echo: false
+#| tbl-cap: "Côte d'Ivoire's match by match results across AFCON"
 
-The underlying xG
+readRDS("ivory_coast_timeline.rds")
+
+
+```
+
+The underlying data from these matches tell us a different story. As shown in Figure 1, Ivory Coast had a steady accumulation of xG in the group stage. Across the entire group stage, they accumulated 3.39 xG per game, which comes to an average of 1.13 per game. Taking the results into consideration, we can see that they produced inconsistent performances throughout the group stage, with the two defeats. Despite losing 4-0 in the last game to Equatorial Guinea, the team had generated 2.06 xG, which is more than the first two games combined. The lack of xG within those first two games indicate a lack of attacking creativity and a difficulty in producing high quality opportunities. The majority of shots that were created accumulated a lower amount of xG, therefore indicating the likelihood of scoring was low. However in the last game of the group stage, despite the result, they managed to create the chances but were not able to finish them off. This sharp defeat led to the managerial change, even though they narrowly progressed to the next stage.
+
+```{r}
+readRDS("cuumulative_ivorycoast_xgplot.rds")
+```
+
+### [4.2 The Managerial Change: The introduction of Emerse Faé]{.underline}
+
+The appointment of Emerse Faé was a surprise for many reasons. No one expected a team to dismiss their manager during the season, especially as they had reached the knockout stages. However, the performances from the team under head coach Jean-Louis Gasset caused for immediate change. The managerial change produced measurable data evidenced changes across all metrics of Ivory Coast's performance. An examination of six areas of comparison between the two managers will best highlight the significant impact that the new manager created.
+
+#### [Shot Map and Attacking Locations]{.underline} 
+
+The shot maps in Figure 2 offer the clearest immediate illustration of how the team's attacking intent had changed.
+
+Under Emerse Faé, Ivory Coast's shots appear to be more centrally concentrated inside and around the penalty area. a large proportion of these shots came in a dangerous area, which therefore gave them a higher chance of scoring. This suggests that there was a more direct attacking structure, which was focused on creating higher quality opportunities in central areas for their attackers. Additionally, the concentration of attacks near the goal indicates that they were frequently able to progress possession in advanced areas, whilst being able to finish the attacks (scoring or missing the chance).
+
+In contrast, under Jean-Louis Gasset the shot distance is noticeably wider and more dispersed across the box. There are more attempts from wider angles, which the StatsBomb xG model assigns that the probability of those chances to be below 0.1. Goals were rare for the team under Gasset, and the two goals that they scored came from chances accumulating 0.075 xg and 0.056 xg respectively.
+
+```{r}
+readRDS("manager_comparison_shotmap.rds")
+```
+
+#### [Shot Quality vs Quantity]{.underline} 
+
+The shot quality data shown in Table X formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an aveage of 0.074 f
+
+```{r}
+readRDS("shotquality_vs_quantity.rds")
+```
 
 ## References
