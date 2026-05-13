@@ -1734,6 +1734,8 @@ deserved_winner_tournament <- all_events %>%
   
 deserved_winner_tournament
 
+saveRDS(deserved_winner_tournament, "deserved_winner_tournament.rds")
+
 # SHINY LIVE DASHBOARD ----
 
 library(shiny)

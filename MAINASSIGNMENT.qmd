@@ -34,7 +34,7 @@ All the data that has been used in the analysis was obtained from StatBomb's ope
 
 The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events.
 
-### [Dataset structure and coverage]{.underline} 
+### [Dataset structure and coverage]{.underline}
 
 ### [Cleaning and Preparation]{.underline}
 
@@ -44,7 +44,7 @@ The StatsBomb event data model captures every on the ball action in a match as i
 
 ### [Going from raw data to dashboard]{.underline}
 
-### [Metrics computed]{.underline} 
+### [Metrics computed]{.underline}
 
 ### [Grouping]{.underline}
 
@@ -57,8 +57,8 @@ The StatsBomb event data model captures every on the ball action in a match as i
 Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. During the knockout stages, Ivory Coast won three games and drew one, which they won on penalties. They had performed at a much higher standard, and that will be analysed later in this section. Table x summarises Ivory Coast's full tournament timeline, showing who they had faced, what the score was and what the result of the game was.
 
 ```{r}
-#| label: ivory_coast_timeline
 #| echo: false
+#| label: ivory_coast_timeline
 #| tbl-cap: "Côte d'Ivoire's match by match results across AFCON"
 
 readRDS("ivory_coast_timeline.rds")
@@ -70,6 +70,8 @@ The underlying data from these matches tell us a different story. As shown in Fi
 
 ```{r}
 #| echo: false
+#| label: cumulative-xG-chart
+#| fig-cap: "A graph highliting the cumulative xG of Ivory Coast through each stage of the tournament"
 #| fig-width: 10
 #| fig-height: 4
 readRDS("cuumulative_ivorycoast_xgplot.rds")
@@ -107,16 +109,18 @@ The difference in shot on target percentage is huge, as Faé's team has an avera
 
 Overall, the table suggests that Ivory Coast were a more clinical and structually efficient attacking side under Faé. Although Gasset's team had generated more shots in less games, they were lower in xG, suggesting the shots were taken with more pressure and in positions that are less likely to test the goalkeeper. In contrast, Fae's team created higher quality chances, tested the goalkeeper more frequently and converted their chances more efficiently.
 
-#### [Shots Conceded and xG Against]{.underline}
+#### [Shots Conceded and xG Against and Defensive Actions]{.underline}
 
-The difference between the
+The data suggests that there was a clear improvement in defensive perfomance following the managerial change. Under Gasset, Ivory Coast conceded more shots per game, and xG per shot with 10.3 shots per game and 1.07 xG per shot. This indicates that they had a vulnerable defensive structure due to the higher amount of high quality chances that they conceded.
+
+In contrast, under Faé, there was a slight improvement. Even though they conceded more xG and more shots, the average for both were lower as their shots conceded per game was 9 and 0.93 xG per shot. This illustrates that they restructed their opponents to lower quality chances, relecting a more organised and resilient structure.
 
 ```{r}
 #| echo: false
 readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds")
 ```
 
-#### [Defensive Actions]{.underline}
+Furthermore, the defensive metrics used have reinforced the improvement in their structure. There has been a rise in tackles from 14.3 to 19.5, suggesting that they have gained more success in tackles and are defending more as a unit. This can be linked to pressures which has also increased from 104 to 141.8 per game. This indicates that there has been a change in intensity, with a more aggressive approach which allows them to turnover possession high, and start a counter attack using their quick wingers. Duels per game have also increased from 26.7 to 36.5, which reflects a more physical approach in contests and ball winning situations in midfield and defense. Interceptions have increased from 6.3 to 7.8 per game which indicates that there has been an increased focus on closing down spaces and blocking passing lanes. Finally, clearances have increased from 11 to 26 per game which suggests that the defenders are prioritising clearing the ball away from dangerous situations rather than keep it in the attacking zones.
 
 ```{r}
 #| echo: false
@@ -132,7 +136,9 @@ readRDS("defensive_actions_manager_comparison")
 readRDS("passing_heatmap.rds")
 ```
 
-#### [Dribble Areas]{.underline} 
+#### [Dribble Areas]{.underline}
+
+Figure X compars Ivory Coast's dribble density under both managers.
 
 ```{r}
 #| echo: false
@@ -140,6 +146,8 @@ readRDS("passing_heatmap.rds")
 #| fig-height: 4
 readRDS("dribble_manager_comparison_plot.rds")
 ```
+
+Under Faé, the dribble areas are heavily concentrated on the wide areas, with it being spread on both sides of the pitch. In heat map
 
 ### [Key player contributions]{.underline}
 
@@ -173,6 +181,7 @@ From this goals and assists table, we can see that the goals have been spread th
 #### [Dribbling Heat Maps]{.underline}
 
 ```{r}
+#| label: top5_dribblers_heatmap
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
