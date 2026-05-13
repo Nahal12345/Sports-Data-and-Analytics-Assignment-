@@ -12,9 +12,11 @@ format:
 
 **Live dashboard:** <https://YOUR-USERNAME.github.io/nba-analytics/>
 
-**Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>\
+**Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>
 
-## [1. Introduction]{.underline}
+{{\< pagebreak\> }}\
+
+## [Introduction]{.underline}
 
 AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerese Faé, who was the Ivory Coast under 23 coach.
 
@@ -24,17 +26,33 @@ The question is interesting because football tournaments can be won due to pure 
 
 The dashboard and the accompanying analysis is structured around the comparison between the group stage performance under Jean-Louis Gasset and the Knockout Stage performance under Emerese Faé, which individual players drove the improvement, and underlying data suggesting whether the title was deserved. The data that has been used throughout this report was sourced from StatsBomb's open data repository, which has provided event-level data for the AFCON data. The dashboard is hosted publicly on GitHub Pages and built using R, ggplot2 and Plotly, with the full code available in the repository that has been linked.
 
-## [2. Data Collection and Preparation]{.underline}
+## [Data Collection and Preparation]{.underline}
 
-### [2.1 Data Source]{.underline} 
+### [Data Source]{.underline}
 
 All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted.
 
 The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events.
 
-## [4. Findings]{.underline} 
+### [Dataset structure and coverage]{.underline} 
 
-### [4.1 Tournament Overview and the Group Stage Struggle]{.underline} 
+### [Cleaning and Preparation]{.underline}
+
+### [Limitations of the Data]{.underline}
+
+## [Methodology]{.underline}
+
+### [Going from raw data to dashboard]{.underline}
+
+### [Metrics computed]{.underline} 
+
+### [Grouping]{.underline}
+
+### [Dashboard Design]{.underline}
+
+## [Findings]{.underline}
+
+### [Tournament Overview and the Group Stage Struggle]{.underline}
 
 Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. During the knockout stages, Ivory Coast won three games and drew one, which they won on penalties. They had performed at a much higher standard, and that will be analysed later in this section. Table x summarises Ivory Coast's full tournament timeline, showing who they had faced, what the score was and what the result of the game was.
 
@@ -51,14 +69,17 @@ readRDS("ivory_coast_timeline.rds")
 The underlying data from these matches tell us a different story. As shown in Figure 1, Ivory Coast had a steady accumulation of xG in the group stage. Across the entire group stage, they accumulated 3.39 xG per game, which comes to an average of 1.13 per game. Taking the results into consideration, we can see that they produced inconsistent performances throughout the group stage, with the two defeats. Despite losing 4-0 in the last game to Equatorial Guinea, the team had generated 2.06 xG, which is more than the first two games combined. The lack of xG within those first two games indicate a lack of attacking creativity and a difficulty in producing high quality opportunities. The majority of shots that were created accumulated a lower amount of xG, therefore indicating the likelihood of scoring was low. However in the last game of the group stage, despite the result, they managed to create the chances but were not able to finish them off. This sharp defeat led to the managerial change, even though they narrowly progressed to the next stage.
 
 ```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
 readRDS("cuumulative_ivorycoast_xgplot.rds")
 ```
 
-### [4.2 The Managerial Change: The introduction of Emerse Faé]{.underline}
+### [The Managerial Change: The introduction of Emerse Faé]{.underline}
 
 The appointment of Emerse Faé was a surprise for many reasons. No one expected a team to dismiss their manager during the season, especially as they had reached the knockout stages. However, the performances from the team under head coach Jean-Louis Gasset caused for immediate change. The managerial change produced measurable data evidenced changes across all metrics of Ivory Coast's performance. An examination of six areas of comparison between the two managers will best highlight the significant impact that the new manager created.
 
-#### [Shot Map and Attacking Locations]{.underline} 
+#### [Shot Map and Attacking Locations]{.underline}
 
 The shot maps in Figure 2 offer the clearest immediate illustration of how the team's attacking intent had changed.
 
@@ -67,15 +88,165 @@ Under Emerse Faé, Ivory Coast's shots appear to be more centrally concentrated 
 In contrast, under Jean-Louis Gasset the shot distance is noticeably wider and more dispersed across the box. There are more attempts from wider angles, which the StatsBomb xG model assigns that the probability of those chances to be below 0.1. Goals were rare for the team under Gasset, and the two goals that they scored came from chances accumulating 0.075 xg and 0.056 xg respectively.
 
 ```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
 readRDS("manager_comparison_shotmap.rds")
 ```
 
-#### [Shot Quality vs Quantity]{.underline} 
+#### [Shot Quality vs Quantity]{.underline}
 
-The shot quality data shown in Table X formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an aveage of 0.074 f
+The shot quality data shown in Table X formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an average of 0.074 xG per shot. They had a shot on target percentage of 19.6%, with only 9 of their 46 shots being on target. Even though Jean-Louis Gasset's team averaged more shots per game, their output was far less effective. Faé's team scored 6 goals from their 51 shots, whereas Gasset's team ony scored 2 from 46. These low amount of goals may not seem a lot, however, tournament football does not always provide high scoring games when teams of similar level play not to lose rather than win. There is a clear difference between avg xG per shot, where Fae's team averaged 0.083 per shot compared to Gasset's 0.074. On the surface level the difference may not seem that large, however over a large amount of shots it reflects a meaningful improvement in shot quality. This further supports the shotmap illustrating that the shots under Faé were in more dangerous areas.
 
 ```{r}
+#| echo: false
 readRDS("shotquality_vs_quantity.rds")
 ```
+
+The difference in shot on target percentage is huge, as Faé's team has an average of 31.4% and Gasset's has an average of 19.6%. This means that nearly one third of shots bt Faé's team tested the goalkeeper, while fewer than one in five did so under Gasset. An interesting contrast emerges between shot quantity and quality as Gasset's team attempted more shots but produced a lower shot on target percentage, lower average xG per shot, fewer goals and a lower total xG. This suggets that a higher shooting volume did not translate into higher attacking performance.
+
+Overall, the table suggests that Ivory Coast were a more clinical and structually efficient attacking side under Faé. Although Gasset's team had generated more shots in less games, they were lower in xG, suggesting the shots were taken with more pressure and in positions that are less likely to test the goalkeeper. In contrast, Fae's team created higher quality chances, tested the goalkeeper more frequently and converted their chances more efficiently.
+
+#### [Shots Conceded and xG Against]{.underline}
+
+The difference between the
+
+```{r}
+#| echo: false
+readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds")
+```
+
+#### [Defensive Actions]{.underline}
+
+```{r}
+#| echo: false
+readRDS("defensive_actions_manager_comparison")
+```
+
+#### [Passing Structure]{.underline}
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+readRDS("passing_heatmap.rds")
+```
+
+#### [Dribble Areas]{.underline} 
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+readRDS("dribble_manager_comparison_plot.rds")
+```
+
+### [Key player contributions]{.underline}
+
+#### [Shot Map]{.underline}
+
+Figure X below illustrates the shot maps of the top five shooters for Ivory Coast.
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+
+readRDS("final_shotmap.rds")
+
+```
+
+As shown, Sébastian Haller's shots are heavily concentrated very close to the goals, which highlights his role as the main striker and the main focal point for all the attacks. In contrast, we can see that the midfielders, Franck Kessie and Seko Fofana shower a much wider distribution of shots, as they are attemptimng shots from outside the box whilst also taking shots within the box. This indicates that they are making late runs into the box. Krasso also has shots in central areas as he was used as a backup striker to Haller. Evan Ndicka's limited amount of shots likely came from set piece situations.
+
+Overall, it appears from the shot maps that Ivory Coast had a well organised attacking strategy with distinct player responsibilities. A focus on effective opportunity generation and attacking via the middle of the pitch is indicated by the concentration of shots through dangerous central areas.
+
+#### [Goals and Assists]{.underline}
+
+```{r}
+#| echo: false
+readRDS("combined_goals_and_assists.rds")
+
+```
+
+From this goals and assists table, we can see that the goals have been spread the team, as no player has scored more than two goals. Franck Kessié and Simon Adingra recorded the highest amount of goal contributions with three each, which highlights their importance in both chance creation and goal scoring. Overall, the table shows that the team was very balanced in attack, and they did not have to rely on one singular player.
+
+#### [Dribbling Heat Maps]{.underline}
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+
+readRDS("top5_dribble_heatmap.rds")
+```
+
+The dribbling heat maps show that Ivory Coast relied heavily on wide attacking dribbles. Oumar Diakité, Jean-Phillipe Krasso and Simon Adingra are the three players with the highest concentration in the wider areas. This further supports the point that they relied on wing play to attack the opponent and pin them back.
+
+In contrast, we have Seko Fofana who plays in midfield meaning his dribbling concentration is more central. He used his dribbles to connect the defense and the attack, and progress the ball through midfield. Ghislain Konan showed deeper and wider dribbling on the left side of defense, which illustrated his importance in helping the team relieve pressure by dribbling out of tough situations.
+
+#### [Defensive stats]{.underline}
+
+The defensive data highlights that Kessié and Seri were the most efficient defensive midfielders. Kessié recorded a very strong tackle success rate at 83.3% whilst Seri recorded 80%. These were both from a high number of tackles meaning that they were very effiicient in the defensive roles that had been set for them. Sangaré also contributed massively, not only with tackles. All round he was a very solid defensive midfielder which allowed the attackers freedom to play.
+
+In the wider defensive areas, both Konan and Singo were involved in a large number of duels and recoveries. Both recorded rather low percentages for their duels won, however, they both excelled at other areas such as interceptions and clearances. The low percentage duels won indicate they were facing difficult one on one situations.
+
+Overall, the table highlights that their defensice strength came from the effectiveness of their midfield, which was supported by the aggressive nature of their fullbacks.
+
+```{r}
+#| echo: false
+readRDS("defensive_stats.rds")
+
+```
+
+#### [Top 5 Passers]{.underline}
+
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 4
+readRDS("top5_passers_heatmap.rds")
+
+```
+
+The passing heat maps indicate that Ivory Coast's buildup play was heavily concentrated through central areas. Kessié and Fofana illustrated high passing activity in central areas, which highlights their importance in connecting the attack and defense with their progressive passes.
+
+Distribution from the flanks was also important for Ivory Coast with Singo and Konan both having high concentration in wide areas. The teams use of fullbacks to support buildup allowed them to maintain width in attacks. Furthermore, Evan Ndicka had a huge role in progression as the high concentration suggests he had a key role in starting attacks.
+
+#### [Attacking Stats]{.underline}
+
+This attacking data table highlights that Seko Fofana is one of the most influential offensive players. He ranks highly in four out of the 6 metrics, with only progressive passing and box entries being his week points. Simon Adingra and Oumar Diakaté both played major roles in attacks, with high amounts of in all metrics apart from progressive passes which indicates that they are always on the receiving end of progressive passes.
+
+There is a huge reliance on the fullbacks in buildup with Konan, Aurier and Singo who have high entries into and touches in the final 3rd, with a huge amount of progressive passes. This further indicates that there was a huge reliance on width, and the players involved supported efficiently.
+
+```{r}
+#| echo: false
+readRDS("attacking_metrics.rds")
+
+```
+
+### [Was the title deserved?]{.underline}
+
+A metric was created to determine who deserved to win the tournament. A weighting was applied depending on what stage the team reached, with the final having a weight of 1, semi final 0.9, Quarter Final 0.85, Round of 16 0.8 and the Group Stage 0.75. This was done so that all factors could be taken into consideration, such as the amount of games they had to play and teams playing harder opponents later in the tournament. Attacking, progressive and defensive stats were also included in the metric.
+
+```{r}
+#| echo: false
+readRDS("deserved_winner_tournament.rds")
+```
+
+The scores revealed that Ivory Coast did infact deserve to win the tournament despite their poor Group Stage performance as their underlying metrics improved significantly across the tournament. Their transition from the inconsistent group of performers to a more efficient team in the knockout stages is reflected in the high attacking score. All round, they are the most consistent team across the four key attributes.
+
+Nigeria who also got to the final are in third place, suggesting that Ivory Coast's win in the final was deserved. While Nigeria were more consistent throughout the tournament, Ivory Coast's effective knockout stage, tied with the weighting of reaching the final, allowed for them to finish at the top of this chart.
+
+Interestingly, Egypt ranked second in this chart despite finishing in the Round of 16. There are many factors to this as they were very strong in the group stages, however, key player Mohammed Salah suffered an injury meaning they were missing their strongest player for the knockout stages.
+
+## [Discussion, Limitation and Conclusion]{.underline}
+
+### [Implication of the Findings]{.underline}
+
+### [Limitations]{.underline}
+
+### [Future Outlook]{.underline}
+
+### [Conclusion]{.underline}
 
 ## References

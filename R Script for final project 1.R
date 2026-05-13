@@ -13,11 +13,15 @@ library(shinydashboard)
 library(shinylive)
 library(bslib)
 library(DT)
+install.packages("tinytex")
+library(tinytex)
+N
 
-install.packages("shinydashboard")
+ninstall.packages("shinydashboard")
 install.packages("gt")
 install.packages("bslib")
 install.packages("DT")
+instal
 
 competitions <- FreeCompetitions()
 
@@ -707,6 +711,8 @@ ivory_coast_timeline <- ivorycoast_matches %>%
 
 ivory_coast_timeline
 
+saveRDS(ivory_coast_timeline, "ivory_coast_timeline.rds")
+
 #xG per game 
 
 
@@ -871,6 +877,8 @@ cuumulative_ivorycoast_xgplot <- ggplot(plot_data_cumulative_ivory, aes(x = roun
     legend.position = "top"
   )
 
+saveRDS(cuumulative_ivorycoast_xgplot, "cuumulative_ivorycoast_xgplot.rds")
+
 #Overall stats 
 
 ivory_coast_summary <- data.frame(
@@ -975,7 +983,7 @@ passing_structure <- all_events %>%
 passing_heatmap <- ggplot(passing_structure, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = after_stat(level)),
+    aes(fill = stat(level)),
     alpha = 0.75,
     contour_var = "ndensity",
     bins = 12
@@ -990,6 +998,8 @@ passing_heatmap <- ggplot(passing_structure, aes(x = x, y = y)) +
   ) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 12))
+
+saveRDS(passing_heatmap, "passing_heatmap.rds")
 
 # Comparison of shot areas between the two managers 
 
@@ -1070,6 +1080,8 @@ manager_comparison_shotmap <- ggplot(ivorycoast_shots_manager) +
   )
 
 
+saveRDS(manager_comparison_shotmap, "manager_comparison_shotmap.rds")
+
 ggplotly(manager_comparison_shotmap, tooltip = "text")
 #Compore the shot conceded and xg performance between the two managers http://127.0.0.1:9383/graphics/plot_zoom_png?width=2115&height=1103
 
@@ -1077,8 +1089,7 @@ ivorycoast_managers_shotsconceded_xgagainst <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | 
            away_team.away_team_name == "Côte d'Ivoire") %>%
   select(match_id, competition_stage.name) %>%
-  mutate(stage = if_else(competition_stage.name == "Group Stage", 
-                         "Group Stage", "Knockout")) %>%
+  mutate(stage = if_else(competition_stage.name == "Group Stage", "Group Stage", "Knockout")) %>%
   left_join(
     all_events %>%
       filter(type.name == "Shot", team.name != "Côte d'Ivoire", period != 5) %>%
@@ -1095,12 +1106,21 @@ ivorycoast_managers_shotsconceded_xgagainst <- afcon_matches %>%
     shots_conceded = sum(shots_conceded, na.rm = TRUE),
     xg_conceded = round(sum(xg_conceded, na.rm = TRUE), 2),
     shots_conceded_per_game = round(shots_conceded / matches, 1),
-    xg_conceded_per_game = round(xg_conceded / matches, 2)
+    xg_conceded_per_game    = round(xg_conceded / matches, 2)
   ) %>% 
   mutate(manager = case_when(
     stage == "Group Stage" ~ "Jean-Louis Gasset",
     stage == "Knockout" ~ "Emerse Faé"
-  ))
+  )) %>%
+  select(manager, matches, shots_conceded, xg_conceded,
+         shots_conceded_per_game, xg_conceded_per_game) %>%
+  pivot_longer(cols = -manager, names_to = "Stat", values_to = "value") %>%
+  mutate(value = as.numeric(value) %>% format(drop0trailing = TRUE) %>% trimws()) %>%
+  pivot_wider(names_from = manager, values_from = value) %>%
+  select(Stat, "Jean-Louis Gasset", "Emerse Faé")
+
+ivorycoast_managers_shotsconceded_xgagainst
+saveRDS(ivorycoast_managers_shotsconceded_xgagainst, "ivorycoast_managers_shotsconceded_xgagainst.rds")
 
 #Dribble heat map comparison 
 
@@ -1120,7 +1140,7 @@ dribble_manager <- all_events %>%
 dribble_manager_comparison_plot <- ggplot(dribble_manager, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = after_stat(level)),
+    aes(fill = stat(level)),
     alpha = 0.75,
     contour_var = "ndensity",
     bins = 12
@@ -1135,7 +1155,7 @@ dribble_manager_comparison_plot <- ggplot(dribble_manager, aes(x = x, y = y)) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 12))
 
-
+saveRDS(dribble_manager_comparison_plot, "dribble_manager_comparison_plot.rds")
 
 # Defensice actions per manager comparison 
 
@@ -1162,12 +1182,15 @@ defensive_actions_manager_comparison <- all_events %>%
     clearances_pg = round(clearances/matches, 1)
   ) %>%
   select(manager, matches, tackles_pg, pressures_pg,
-         duels_pg, interceptions_pg, clearances_pg)
-
+         duels_pg, interceptions_pg, clearances_pg) %>%
+  pivot_longer(cols = -manager, names_to = "Stat", values_to = "value") %>%
+  mutate(value = format(value, drop0trailing = TRUE) %>% trimws()) %>%
+  pivot_wider(names_from = manager, values_from = value) %>%
+  select(Stat, "Jean-Louis Gasset", "Emerse Faé")
 defensive_actions_manager_comparison
 
 
-
+saveRDS(defensive_actions_manager_comparison, "defensive_actions_manager_comparison")
 
 
 # Shot quality vs quantity 
@@ -1195,20 +1218,40 @@ shotquality_vs_quantity <- afcon_matches %>%
   ) %>%
   group_by(manager) %>%
   summarise(
-    matches = n(),
-    total_shots = sum(total_shots, na.rm = TRUE),
+    matches         = n(),
+    total_shots     = sum(total_shots, na.rm = TRUE),
     shots_on_target = sum(shots_on_target, na.rm = TRUE),
-    total_xg = round(sum(total_xg,  na.rm = TRUE), 2),
-    goals = sum(goals, na.rm = TRUE),
-    shots_per_game = round(total_shots/matches, 1),
+    total_xg        = round(sum(total_xg, na.rm = TRUE), 2),
+    goals           = sum(goals, na.rm = TRUE),
+    shots_per_game  = round(total_shots/matches, 1),
     avg_xg_per_shot = round(total_xg/total_shots, 3),
-    shot_accuracy = round(shots_on_target/total_shots * 100, 1)
+    shot_accuracy   = round(shots_on_target/total_shots * 100, 1)
   ) %>%
-  arrange(desc(avg_xg_per_shot))
+  arrange(desc(avg_xg_per_shot)) %>%
+  mutate(
+    matches         = as.character(matches),
+    total_shots     = as.character(total_shots),
+    shots_on_target = as.character(shots_on_target),
+    total_xg        = as.character(total_xg),
+    goals           = as.character(goals),
+    shots_per_game  = as.character(shots_per_game),
+    avg_xg_per_shot = as.character(avg_xg_per_shot),
+    shot_accuracy   = as.character(shot_accuracy)
+  ) %>%
+  pivot_longer(-manager, names_to = "Metric", values_to = "Value") %>%
+  pivot_wider(names_from = manager, values_from = "Value") %>%
+  mutate(Metric = recode(Metric,
+                         "matches"          = "Matches",
+                         "total_shots"      = "Total Shots",
+                         "shots_on_target"  = "Shots on Target",
+                         "total_xg"         = "Total xG",
+                         "goals"            = "Goals",
+                         "shots_per_game"   = "Shots per Game",
+                         "avg_xg_per_shot"  = "Avg xG per Shot",
+                         "shot_accuracy"    = "Shot Accuracy (%)"
+  ))
 
-ivorycoast_shot_quality
-
-# Physical intensity -> pressures, sprints, duels 
+saveRDS(shotquality_vs_quantity, "shotquality_vs_quantity.rds")
 
 
 
@@ -1338,11 +1381,8 @@ final_shotmap <- ggplot(ivorycoast_top5_shooters) +
   )
 
 ggplotly(final_shotmap, tooltip = "text")
-# Expected goals graph, highlight ivory coast pkayers compared to the rest of the players in the tourney 
 
-
-
-
+saveRDS(final_shotmap, "final_shotmap.rds")
 
 # Table of goals and assists for ivory coast 
 goals_graph <- all_events %>%
@@ -1363,7 +1403,7 @@ combined_goals_and_assists <- combined_goals_and_assists %>%
 
 combined_goals_and_assists <- combined_goals_and_assists %>%
   replace_na(list(Goals = 0, Assists = 0))
-
+saveRDS(combined_goals_and_assists, "combined_goals_and_assists.rds")
 
 # Dribbling stats 
 
@@ -1393,7 +1433,7 @@ dribble_locations <- all_events %>%
 dribble_heatmap <- ggplot(dribble_locations, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = after_stat(level)),
+    aes(fill = stat(level)),
     alpha = 0.75,
     contour_var = "ndensity",
     bins = 12
@@ -1446,7 +1486,7 @@ dribble_locations <- all_events %>%
 top5_dribble_heatmap <- ggplot(dribble_locations, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = after_stat(level)),
+    aes(fill = stat(level)),
     alpha = 0.75,
     contour_var = "ndensity",
     bins = 12
@@ -1462,9 +1502,7 @@ top5_dribble_heatmap <- ggplot(dribble_locations, aes(x = x, y = y)) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 11))
 
-dribble_heatmap
-
-# Shot creating actions
+saveRDS(top5_dribble_heatmap,"top5_dribble_heatmap.rds")
 
 
 # Defensive actions -> tackles, blocks etc 
@@ -1505,6 +1543,7 @@ defensive_stats <- all_events %>%
   ) %>%
   filter(tackles + pressures + interceptions + duels + clearances > 0) %>%
   arrange(desc(tackles))
+saveRDS(defensive_stats, "defensive_stats.rds")
 
 view(defensive_stats)
 
@@ -1530,7 +1569,7 @@ pass_locations <- all_events %>%
 top5_passers_heatmap <- ggplot(pass_locations, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = after_stat(level)),
+    aes(fill = stat(level)),
     alpha = 0.75,
     contour_var = "ndensity",
     bins = 12
@@ -1545,6 +1584,9 @@ top5_passers_heatmap <- ggplot(pass_locations, aes(x = x, y = y)) +
   ) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 11))
+
+saveRDS(top5_passers_heatmap, "top5_passers_heatmap.rds")
+
 
 #Attacking metrics table
 
@@ -1570,7 +1612,7 @@ attacking_metrics <- all_events %>%
 
 view(attacking_metrics)
 
-
+saveRDS(attacking_metrics, "attacking_metrics.rds")
 
 
 
