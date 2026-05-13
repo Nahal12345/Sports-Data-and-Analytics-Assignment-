@@ -59,7 +59,7 @@ One important structural decision that was required to be made was the exclusion
 
 ### [Limitations of the Data]{.underline}
 
-There are certain limitations of the data set which affected the research. Firstly, the Statsbomb open data
+There are certain limitations of the data set which affected the research. Firstly, the Statsbomb open data does not include tracking data (player positions in between the events), which limits the amount of off the ball metrics. This includes the pressing intensity and the overall defensive structure. Linking to this, the xG model used will not take underlying metrics such as pressure on the attacker, or how close the defender is, meaning
 
 ## [Methodology]{.underline}
 
