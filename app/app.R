@@ -161,7 +161,7 @@ server <- function(input, output, session) {
   output$manager_dribble_heatmap <- renderPlot({ dribble_manager_comparison_plot })
   
   # ── Key Players ────────────────────────────────────────────────────────────
-  output$top5_shotmap <- renderPlot({ ggplot(final_shotmap, tooltip = "text") })
+  output$top5_shotmap <- renderPlot({ final_shotmap })
   output$goals_assists_table <- renderDT({ combined_goals_and_assists },
                                          options = list(pageLength = 10,
                                                         order = list(list(1, "desc"))))
