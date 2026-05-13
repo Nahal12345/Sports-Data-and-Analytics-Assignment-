@@ -14,8 +14,6 @@ format:
 
 **Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>
 
-
-
 ## [Introduction]{.underline}
 
 AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerese Faé, who was the Ivory Coast under 23 coach.
@@ -38,20 +36,20 @@ The StatsBomb event data model captures every on the ball action in a match as i
 
 The final merged dataset consisted of all 52 AFCON 2023 matches. The event level data frame consisted of 162,910 rows across all matches, with each row representing a single recorded event. The key variables used in this research were:
 
-| Variable               | Type      | Description                     |
-|------------------------|-----------|---------------------------------|
-| match_id               | Integer   | Unique match identifier         |
-| competition_stage.name | Character | Round of competition            |
-| team.name              | Character | Team Name                       |
-| type.name              | Character | Event type                      |
-| shot.statsbomb_xg      | Double    | Expected goals value            |
-| shot.outcome_name      | Character | Shot result                     |
-| player.name            | Character | Full player name                |
-| location               | List      | x,y coordinates on the pitch    |
-| minute/second          | Integer   | Event timestamp                 |
-| possession_team.name   | Character | Team in possession              |
-| duel.type.name         | Character | Type of duel occuring           |
-| pass.goal_assist       | Logial    | Whether the pass led to a goal  |
+| Variable               | Type      | Description                    |
+|------------------------|-----------|--------------------------------|
+| match_id               | Integer   | Unique match identifier        |
+| competition_stage.name | Character | Round of competition           |
+| team.name              | Character | Team Name                      |
+| type.name              | Character | Event type                     |
+| shot.statsbomb_xg      | Double    | Expected goals value           |
+| shot.outcome_name      | Character | Shot result                    |
+| player.name            | Character | Full player name               |
+| location               | List      | x,y coordinates on the pitch   |
+| minute/second          | Integer   | Event timestamp                |
+| possession_team.name   | Character | Team in possession             |
+| duel.type.name         | Character | Type of duel occuring          |
+| pass.goal_assist       | Logial    | Whether the pass led to a goal |
 
 For Ivory Coast specifically, the **ivorycoast_matches** subset identified the seven matches that they played in. The events from these matches were filtered from **all_events** using the match_id to analyse specific matches. This allowed for specific event data to be pulled from their matches, and using **possession_team.name == "Côte d'Ivoire"** allowed for a more focused view on the team.
 
