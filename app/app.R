@@ -8,7 +8,7 @@ library(dplyr)
 library(tidyr)
 library(MASS)
 
-load("NEWAFCONDATA10.RData")
+
 
 # At the very top of app.R before ui and server
 ivory_coast_summary                        <- readRDS("ivory_coast_summary.rds")
