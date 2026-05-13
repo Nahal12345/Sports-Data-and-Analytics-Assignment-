@@ -1401,7 +1401,7 @@ final_shotmap <- ggplot(ivorycoast_top5_shooters) +
     plot.margin = margin(10, 20, 10, 20)
   )
 
-ggplotly(final_shotmap, tooltip = "text")
+
 
 saveRDS(final_shotmap, "final_shotmap.rds")
 

@@ -8,6 +8,7 @@ library(dplyr)
 library(tidyr)
 library(MASS)
 
+load("NEWAFCONDATA10.RData")
 
 # At the very top of app.R before ui and server
 ivory_coast_summary                        <- readRDS("ivory_coast_summary.rds")
@@ -99,7 +100,7 @@ ui <- fluidPage(
     h2("Key Players", style = "color:white; text-align:center;"),
     navset_pill(
       nav_panel("Shot Map",
-                plotlyOutput("top5_shotmap", height = "600px")),
+                plotOutput("top5_shotmap", height = "600px")),
       nav_panel("Goals & Assists",
                 DTOutput("goals_assists_table")),
       nav_panel("Top 5 Dribblers",
@@ -160,7 +161,7 @@ server <- function(input, output, session) {
   output$manager_dribble_heatmap <- renderPlot({ dribble_manager_comparison_plot })
   
   # ── Key Players ────────────────────────────────────────────────────────────
-  output$top5_shotmap <- renderPlotly({ ggplotly(final_shotmap, tooltip = "text") })
+  output$top5_shotmap <- renderPlot({ ggplot(final_shotmap, tooltip = "text") })
   output$goals_assists_table <- renderDT({ combined_goals_and_assists },
                                          options = list(pageLength = 10,
                                                         order = list(list(1, "desc"))))
@@ -182,3 +183,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+  
