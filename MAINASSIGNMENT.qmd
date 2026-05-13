@@ -10,9 +10,9 @@ format:
 
 ## My Resources
 
-**Live dashboard:** <https://YOUR-USERNAME.github.io/nba-analytics/>
+**Live dashboard:** <https://nahal12345.github.io/Sports-Data-and-Analytics-Assignment-/>
 
-**Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>
+**Repository:** <https://github.com/Nahal12345/Sports-Data-and-Analytics-Assignment->
 
 ## [Introduction]{.underline}
 

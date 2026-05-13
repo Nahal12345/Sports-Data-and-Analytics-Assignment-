@@ -1355,6 +1355,13 @@ ivorycoast_top5_shooters <- all_events %>%
 
 view(ivorycoast_top5_shooters)
 
+outcome_colours <- c(
+  "Goal"       = "#ffffff",
+  "Saved"      = "#6b8fc4",
+  "Blocked"    = "#e07b39",
+  "Off Target" = "#8aab96"
+)
+
 final_shotmap <- ggplot(ivorycoast_top5_shooters) +
   draw_pitch() +
   geom_segment(
@@ -1367,38 +1374,49 @@ final_shotmap <- ggplot(ivorycoast_top5_shooters) +
     arrow     = arrow(length = unit(0.18, "cm"), type = "open")
   ) +
   geom_point(
-    aes(x = x, y = y, color = shot_type,
-        text = paste("Player:", player.name,
-                     "<br>Outcome:", shot.outcome.name,
-                     "<br>xG:", round(shot.statsbomb_xg, 3),
-                     "<br>Minute:", minute)),
+    aes(x = x, y = y, color = shot_type, size = shot.statsbomb_xg),
     fill   = NA,
-    size   = 3,
     shape  = 21,
     stroke = 1.2,
     alpha  = 0.85
   ) +
-  scale_color_manual(values = outcome_colours, guide = "none") +
+  scale_color_manual(
+    values = outcome_colours,
+    name   = "Outcome"
+  ) +
+  scale_size_continuous(
+    name   = "xG",
+    range  = c(2, 8),
+    breaks = c(0.05, 0.15, 0.3, 0.5),
+    labels = c("0.05", "0.15", "0.30", "0.50")
+  ) +
   coord_flip(xlim = c(58, 123), ylim = c(0, 80), expand = FALSE) +
   scale_x_continuous() +
   scale_y_reverse() +
   facet_wrap(~player.name, ncol = 3) +
   labs(
-    title = "Côte d'Ivoire — Top 5 Shooters Shot Map",
-    caption = "Data: StatsBomb  |  Excludes penalties"
+    title   = "Côte d'Ivoire — Top 5 Shooters Shot Map",
+    caption = "Data: StatsBomb  |  Excludes penalties  |  Size = xG"
   ) +
   theme_void(base_size = 12) +
   theme(
     plot.background  = element_rect(fill = "#1e1e2e", color = NA),
     panel.background = element_rect(fill = "#1e1e2e", color = NA),
-    plot.title = element_text(color = "#f0f0f0", face = "bold",
+    plot.title       = element_text(color = "#f0f0f0", face = "bold",
                                     hjust = 0.5, size = 16,
                                     margin = margin(t = 14, b = 4)),
-    plot.caption = element_text(color = "#666666", hjust = 0.98,
+    plot.caption     = element_text(color = "#666666", hjust = 0.98,
                                     size = 9, margin = margin(t = 6, b = 10)),
-    strip.text = element_text(color = "white", face = "bold",
+    strip.text       = element_text(color = "white", face = "bold",
                                     size = 11, margin = margin(b = 6)),
-    plot.margin = margin(10, 20, 10, 20)
+    plot.margin      = margin(10, 20, 10, 20),
+    legend.position  = "bottom",
+    legend.text      = element_text(color = "white", size = 9),
+    legend.title     = element_text(color = "white", size = 10)
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(size = 4), nrow = 1),
+    size  = guide_legend(nrow = 1)
   )
 
 
