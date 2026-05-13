@@ -16,7 +16,7 @@ library(DT)
 install.packages("tinytex")
 library(tinytex)
 N
-
+install.packages("shinylive")
 ninstall.packages("shinydashboard")
 install.packages("gt")
 install.packages("bslib")
@@ -879,6 +879,38 @@ cuumulative_ivorycoast_xgplot <- ggplot(plot_data_cumulative_ivory, aes(x = roun
 
 saveRDS(cuumulative_ivorycoast_xgplot, "cuumulative_ivorycoast_xgplot.rds")
 
+
+draw_pitch <- function(pitch_fill = "#3a6b35") {
+  list(
+    annotate("rect", xmin = 0, xmax = 120, ymin = 0, ymax = 80,
+             fill = pitch_fill, color = "white", linewidth = 0.8),
+    annotate("segment", x = 60, xend = 60, y = 0, yend = 80,
+             color = "white", linewidth = 0.5, alpha = 0.6),
+    annotate("path",
+             x = 60 + 10 * cos(seq(0, 2*pi, length.out = 150)),
+             y = 40 + 10 * sin(seq(0, 2*pi, length.out = 150)),
+             color = "white", linewidth = 0.5, alpha = 0.6),
+    annotate("point", x = 60, y = 40, color = "white", size = 1.2),
+    annotate("rect", xmin = 0, xmax = 18, ymin = 18, ymax = 62,
+             fill = NA, color = "white", linewidth = 0.5, alpha = 0.7),
+    annotate("rect", xmin = 102, xmax = 120, ymin = 18, ymax = 62,
+             fill = NA, color = "white", linewidth = 0.6),
+    annotate("rect", xmin = 0, xmax = 6, ymin = 30, ymax = 50,
+             fill = NA, color = "white", linewidth = 0.5, alpha = 0.7),
+    annotate("rect", xmin = 114, xmax = 120, ymin = 30, ymax = 50,
+             fill = NA, color = "white", linewidth = 0.6),
+    annotate("rect", xmin = 120, xmax = 122, ymin = 36, ymax = 44,
+             fill = NA, color = "white", linewidth = 0.8),
+    annotate("rect", xmin = -2, xmax = 0, ymin = 36, ymax = 44,
+             fill = NA, color = "white", linewidth = 0.5, alpha = 0.7),
+    annotate("point", x = 108, y = 40, color = "white", size = 1.2),
+    annotate("path",
+             x = 108 + 10 * cos(seq(pi - 0.84, pi + 0.84, length.out = 60)),
+             y = 40  + 10 * sin(seq(pi - 0.84, pi + 0.84, length.out = 60)),
+             color = "white", linewidth = 0.5)
+  )
+}
+
 #Overall stats 
 
 ivory_coast_summary <- data.frame(
@@ -968,36 +1000,33 @@ ivorycoast_manager_comparison <- ivorycoast_manager_comparison %>%
 
 #Tactical Changes ----
 ##Passing Structures
-passing_structure <- all_events %>%
+passing_data <- all_events %>%
   filter(team.name == "Côte d'Ivoire", type.name == "Pass") %>%
   filter(match_id %in% ivorycoast_matches$match_id) %>%
-  left_join(afcon_matches %>% select(match_id, competition_stage.name), 
-            by = "match_id") %>%
+  left_join(afcon_matches %>% dplyr::select(match_id, competition_stage.name), by = "match_id") %>%
   mutate(
-    x = sapply(location, `[[`, 1),
-    y = sapply(location, `[[`, 2),
+    x       = sapply(location, `[[`, 1),
+    y       = sapply(location, `[[`, 2),
     manager = if_else(competition_stage.name == "Group Stage",
                       "Jean-Louis Gasset", "Emerse Faé")
   )
 
-passing_heatmap <- ggplot(passing_structure, aes(x = x, y = y)) +
+passing_heatmap <- ggplot(passing_data, aes(x = x, y = y)) +
   draw_pitch() +
   stat_density_2d_filled(
-    aes(fill = stat(level)),
-    alpha = 0.75,
+    aes(fill = after_stat(level)),
+    alpha       = 0.75,
     contour_var = "ndensity",
-    bins = 12
+    bins        = 12
   ) +
   scale_fill_viridis_d(option = "inferno", name = "Density") +
   coord_fixed(xlim = c(0, 120), ylim = c(0, 80), expand = FALSE) +
   facet_wrap(~manager) +
-  labs(
-    title    = "Côte d'Ivoire — Passing Structure by Manager",
-    subtitle = "Density of pass origins across the tournament",
-    caption  = "Data: StatsBomb"
-  ) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 12))
+
+ggsave("app/passing_heatmap.png", passing_heatmap, width = 10, height = 6)
+
 
 saveRDS(passing_heatmap, "passing_heatmap.rds")
 
@@ -1124,37 +1153,29 @@ saveRDS(ivorycoast_managers_shotsconceded_xgagainst, "ivorycoast_managers_shotsc
 
 #Dribble heat map comparison 
 
-dribble_manager <- all_events %>%
-  filter(team.name == "Côte d'Ivoire",
-         type.name == "Dribble",
-         dribble.outcome.name == "Complete",
-         match_id %in% ivorycoast_matches$match_id) %>%
-  left_join(afcon_matches %>% select(match_id, competition_stage.name), by = "match_id") %>%
-  mutate(
-    x = sapply(location, `[[`, 1),
-    y = sapply(location, `[[`, 2),
+dribble_manager <-  all_events %>%
+  dplyr::filter(team.name == "Côte d'Ivoire",
+                type.name == "Dribble",
+                dribble.outcome.name == "Complete",
+                match_id %in% ivorycoast_matches$match_id) %>%
+  left_join(afcon_matches %>% dplyr::select(match_id, competition_stage.name), by = "match_id") %>%
+  dplyr::mutate(
+    x       = sapply(location, `[[`, 1),
+    y       = sapply(location, `[[`, 2),
     manager = if_else(competition_stage.name == "Group Stage",
                       "Jean-Louis Gasset", "Emerse Faé")
   )
 
+
 dribble_manager_comparison_plot <- ggplot(dribble_manager, aes(x = x, y = y)) +
   draw_pitch() +
-  stat_density_2d_filled(
-    aes(fill = stat(level)),
-    alpha = 0.75,
-    contour_var = "ndensity",
-    bins = 12
-  ) +
+  stat_density_2d_filled(aes(fill = after_stat(level)),
+                         alpha = 0.75, contour_var = "ndensity", bins = 12) +
   scale_fill_viridis_d(option = "inferno", name = "Density") +
   coord_fixed(xlim = c(0, 120), ylim = c(0, 80), expand = FALSE) +
   facet_wrap(~manager) +
-  labs(
-    title = "Côte d'Ivoire — Dribble Heatmap by Manager",
-    caption = "Data: StatsBomb"
-  ) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 12))
-
 saveRDS(dribble_manager_comparison_plot, "dribble_manager_comparison_plot.rds")
 
 # Defensice actions per manager comparison 
@@ -1190,7 +1211,7 @@ defensive_actions_manager_comparison <- all_events %>%
 defensive_actions_manager_comparison
 
 
-saveRDS(defensive_actions_manager_comparison, "defensive_actions_manager_comparison")
+saveRDS(defensive_actions_manager_comparison, "defensive_actions_manager_comparison.rds")
 
 
 # Shot quality vs quantity 
@@ -1550,30 +1571,23 @@ view(defensive_stats)
 # Top 5 Passers 
 
 top5_passers <- all_events %>%
-  filter(team.name == "Côte d'Ivoire", type.name == "Pass") %>%
-  count(player.name, sort = TRUE) %>%
-  slice_head(n = 5) %>%
-  pull(player.name)
+  dplyr::filter(team.name == "Côte d'Ivoire", type.name == "Pass") %>%
+  dplyr::count(player.name, sort = TRUE) %>%
+  dplyr::slice_head(n = 5) %>%
+  dplyr::pull(player.name)
 
 pass_locations <- all_events %>%
-  filter(team.name == "Côte d'Ivoire",
-         type.name == "Pass",
-         player.name %in% top5_passers) %>%
-  mutate(
+  dplyr::filter(team.name == "Côte d'Ivoire", type.name == "Pass",
+                player.name %in% top5_passers) %>%
+  dplyr::mutate(
     x = sapply(location, `[[`, 1),
-    y = sapply(location, `[[`, 2),
-    x = if_else(x < 60, 120 - x, x),
-    y = if_else(x < 60, 80  - y, y)
+    y = sapply(location, `[[`, 2)
   )
 
 top5_passers_heatmap <- ggplot(pass_locations, aes(x = x, y = y)) +
   draw_pitch() +
-  stat_density_2d_filled(
-    aes(fill = stat(level)),
-    alpha = 0.75,
-    contour_var = "ndensity",
-    bins = 12
-  ) +
+  stat_density_2d_filled(aes(fill = after_stat(level)),
+                         alpha = 0.75, contour_var = "ndensity", bins = 12) +
   scale_fill_viridis_d(option = "inferno", name = "Density") +
   coord_fixed(xlim = c(0, 120), ylim = c(0, 80), expand = FALSE) +
   facet_wrap(~player.name, ncol = 3) +
@@ -1584,6 +1598,7 @@ top5_passers_heatmap <- ggplot(pass_locations, aes(x = x, y = y)) +
   ) +
   pitch_theme +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 11))
+
 
 saveRDS(top5_passers_heatmap, "top5_passers_heatmap.rds")
 
@@ -1902,4 +1917,12 @@ shinyApp(ui, server)
 
 library(shin)
 
+# Save each heatmap as a PNG instead
+detach("package:plotly", unload = TRUE)
 
+ggsave("app/top5_passers_heatmap.png", top5_passers_heatmap, width= 10 , height = 6)
+ggsave("app/top5_dribble_heatmap.png",       top5_dribble_heatmap,            width = 10, height = 6)
+ggsave("app/dribble_manager_comparison.png", dribble_manager_comparison_plot, width = 10, height = 6)
+ggsave("app/passing_heatmap.png",            passing_heatmap,                 width = 10, height = 6)
+
+library(plotly)

@@ -6,6 +6,26 @@ library(bslib)
 library(DT)
 library(dplyr)
 library(tidyr)
+library(MASS)
+
+
+# At the very top of app.R before ui and server
+ivory_coast_summary                        <- readRDS("ivory_coast_summary.rds")
+ivory_coast_timeline                       <- readRDS("ivory_coast_timeline.rds")
+cuumulative_ivorycoast_xgplot              <- readRDS("cuumulative_ivorycoast_xgplot.rds")
+manager_comparison_shotmap                 <- readRDS("manager_comparison_shotmap.rds")
+ivorycoast_managers_shotsconceded_xgagainst <- readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds")
+shotquality_vs_quantity                    <- readRDS("shotquality_vs_quantity.rds")
+passing_heatmap                            <- readRDS("passing_heatmap.rds")
+defensive_actions_manager_comparison       <- readRDS("defensive_actions_manager_comparison.rds")
+dribble_manager_comparison_plot            <- readRDS("dribble_manager_comparison_plot.rds")
+final_shotmap                              <- readRDS("final_shotmap.rds")
+combined_goals_and_assists                 <- readRDS("combined_goals_and_assists.rds")
+top5_dribble_heatmap                       <- readRDS("top5_dribble_heatmap.rds")
+defensive_stats                            <- readRDS("defensive_stats.rds")
+top5_passers_heatmap                       <- readRDS("top5_passers_heatmap.rds")
+attacking_metrics                          <- readRDS("attacking_metrics.rds")
+deserved_winner_tournament                 <- readRDS("deserved_winner_tournament.rds")
 
 ui <- fluidPage(
   theme = bs_theme(version = 5, bootswatch = "darkly"),

@@ -14,7 +14,7 @@ format:
 
 **Repository:** <https://github.com/YOUR-USERNAME/nba-analytics>
 
-{{\< pagebreak\> }}\
+
 
 ## [Introduction]{.underline}
 
@@ -30,15 +30,38 @@ The dashboard and the accompanying analysis is structured around the comparison 
 
 ### [Data Source]{.underline}
 
-All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted.
+All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted. This was downloaded by: devtools::install.github("statsbomb/StatsBombR").
 
-The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events.
+The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events. The three primary functions that were used to collect the data were **FreeCompetitions(), FreeMatches() and get.matchFree(). FreeCompetitions()** was used to retrieve the full list of available competitions and identified AFCON2023. To filter for this, the competition id was filtered using 1267. This allowed for the match data to be downloaded, which is where **FreeMatches()** was used. In order to pull event level data from the matches, **get.matchFree()** was used to return a database of every recorded event, such as shots, passes, dribbles and duels etc.
 
 ### [Dataset structure and coverage]{.underline}
+
+The final merged dataset consisted of all 52 AFCON 2023 matches. The event level data frame consisted of 162,910 rows across all matches, with each row representing a single recorded event. The key variables used in this research were:
+
+| Variable               | Type      | Description                     |
+|------------------------|-----------|---------------------------------|
+| match_id               | Integer   | Unique match identifier         |
+| competition_stage.name | Character | Round of competition            |
+| team.name              | Character | Team Name                       |
+| type.name              | Character | Event type                      |
+| shot.statsbomb_xg      | Double    | Expected goals value            |
+| shot.outcome_name      | Character | Shot result                     |
+| player.name            | Character | Full player name                |
+| location               | List      | x,y coordinates on the pitch    |
+| minute/second          | Integer   | Event timestamp                 |
+| possession_team.name   | Character | Team in possession              |
+| duel.type.name         | Character | Type of duel occuring           |
+| pass.goal_assist       | Logial    | Whether the pass led to a goal  |
+
+For Ivory Coast specifically, the **ivorycoast_matches** subset identified the seven matches that they played in. The events from these matches were filtered from **all_events** using the match_id to analyse specific matches. This allowed for specific event data to be pulled from their matches, and using **possession_team.name == "Côte d'Ivoire"** allowed for a more focused view on the team.
+
+One important structural decision that was required to be made was the exclusion of **"period ==5",** which corresponds to a penalty shootout in Statsbomb databases. This was done as the penalty shootout goals, shots and xG were being included into the overall shot and goal analysis. Including these events would have altered the results, as penalty shootouts occur outside of normal time, therefore they do not represent in game performance in the same way that the regular event data does. Penalties carry a very high xG value, which would mean that when analysing the cumulative xG for Ivory Coast throughout the tournament, the penalty shootout vs Senegal would have interfered with the data collection.
 
 ### [Cleaning and Preparation]{.underline}
 
 ### [Limitations of the Data]{.underline}
+
+There are certain limitations of the data set which affected the research. Firstly, the Statsbomb open data
 
 ## [Methodology]{.underline}
 
