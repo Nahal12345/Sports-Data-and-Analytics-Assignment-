@@ -4,8 +4,24 @@ author: "Arjan Nahal (201570800)"
 date: today
 format:
   pdf:
+    pdf-engine: xelatex
     toc: true
+    lof: true
+    lot: true
     number-sections: true
+    fontsize: 11pt
+    linestretch: 1.15
+    geometry: margin=2.54cm
+    justify: true
+    indent: false
+    mainfont: "Calibri"
+    monofont: "Consolas"
+    monofontoptions: "Color=0070C0"
+    include-in-header:
+      text: |
+        \usepackage{parskip}
+        \setlength{\parskip}{8pt}
+        \setlength{\parindent}{0pt}
 ---
 
 ## My Resources
@@ -123,10 +139,10 @@ Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing on
 
 ```{r}
 #| echo: false
-#| label: ivory_coast_timeline
+#| label: tbl-ivory_coast_timeline
 #| tbl-cap: "Côte d'Ivoire's match by match results across AFCON"
 
-readRDS("ivory_coast_timeline.rds")
+readRDS("ivory_coast_timeline.rds") |> knitr::kable()
 
 
 ```
@@ -155,6 +171,8 @@ Under Emerse Faé, Ivory Coast's shots appear to be more centrally concentrated 
 In contrast, under Jean-Louis Gasset the shot distance is noticeably wider and more dispersed across the box. There are more attempts from wider angles, which the StatsBomb xG model assigns that the probability of those chances to be below 0.1. Goals were rare for the team under Gasset, and the two goals that they scored came from chances accumulating 0.075 xg and 0.056 xg respectively.
 
 ```{r}
+#| label: manager-comparison-shotmap
+#| fig-cap: "Comparison Between The Two Managers' Shot Maps"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -166,8 +184,10 @@ readRDS("manager_comparison_shotmap.rds")
 The shot quality data shown in Table X formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an average of 0.074 xG per shot. They had a shot on target percentage of 19.6%, with only 9 of their 46 shots being on target. Even though Jean-Louis Gasset's team averaged more shots per game, their output was far less effective. Faé's team scored 6 goals from their 51 shots, whereas Gasset's team ony scored 2 from 46. These low amount of goals may not seem a lot, however, tournament football does not always provide high scoring games when teams of similar level play not to lose rather than win. There is a clear difference between avg xG per shot, where Fae's team averaged 0.083 per shot compared to Gasset's 0.074. On the surface level the difference may not seem that large, however over a large amount of shots it reflects a meaningful improvement in shot quality. This further supports the shotmap illustrating that the shots under Faé were in more dangerous areas.
 
 ```{r}
+#| label: shot-quality-vs-quantity
+#| tbl-cap: "Shot Quality vs Quantity Comparison by Manager"
 #| echo: false
-readRDS("shotquality_vs_quantity.rds")
+readRDS("shotquality_vs_quantity.rds") |> knitr::kable()
 ```
 
 The difference in shot on target percentage is huge, as Faé's team has an average of 31.4% and Gasset's has an average of 19.6%. This means that nearly one third of shots bt Faé's team tested the goalkeeper, while fewer than one in five did so under Gasset. An interesting contrast emerges between shot quantity and quality as Gasset's team attempted more shots but produced a lower shot on target percentage, lower average xG per shot, fewer goals and a lower total xG. This suggets that a higher shooting volume did not translate into higher attacking performance.
@@ -181,15 +201,19 @@ The data suggests that there was a clear improvement in defensive perfomance fol
 In contrast, under Faé, there was a slight improvement. Even though they conceded more xG and more shots, the average for both were lower as their shots conceded per game was 9 and 0.93 xG per shot. This illustrates that they restructed their opponents to lower quality chances, relecting a more organised and resilient structure.
 
 ```{r}
+#| label: ivorycoast-managers-shotsconceded-xgagainst
+#| tbl-cap: "Ivory Coast Shots Conceded and xG Against Table"
 #| echo: false
-readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds")
+readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds") |> knitr::kable()
 ```
 
 Furthermore, the defensive metrics used have reinforced the improvement in their structure. There has been a rise in tackles from 14.3 to 19.5, suggesting that they have gained more success in tackles and are defending more as a unit. This can be linked to pressures which has also increased from 104 to 141.8 per game. This indicates that there has been a change in intensity, with a more aggressive approach which allows them to turnover possession high, and start a counter attack using their quick wingers. Duels per game have also increased from 26.7 to 36.5, which reflects a more physical approach in contests and ball winning situations in midfield and defense. Interceptions have increased from 6.3 to 7.8 per game which indicates that there has been an increased focus on closing down spaces and blocking passing lanes. Finally, clearances have increased from 11 to 26 per game which suggests that the defenders are prioritising clearing the ball away from dangerous situations rather than keep it in the attacking zones.
 
 ```{r}
-#| echo: false
-readRDS("defensive_actions_manager_comparison")
+#| label: defensive-actions-manager-comparison
+#| tbl-cap: "Defensive Actions between Managers"
+#| cho: false
+readRDS("defensive_actions_manager_comparison") |> knitr::kable()
 ```
 
 #### [Passing Structure]{.underline}
@@ -197,6 +221,8 @@ readRDS("defensive_actions_manager_comparison")
 Figue X shows compares heat maps of passes under each manager.
 
 ```{r}
+#| label: passing_heatmap
+#| fig-cap: "Passing Heatmap Comparison By Managaer"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -210,6 +236,8 @@ Both heat maps are very similar with very high concentration in deeper and wider
 Figure X compares Ivory Coast's dribble density under each managers.
 
 ```{r}
+#| label: dribble-manager-comparison-plot
+#| fig-cap: "Dribble Heatmap Comparison By Manager"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -227,6 +255,8 @@ Under Gasset, there are very similar dribbling patterns where the wing areas gav
 Figure X below illustrates the shot maps of the top five shooters for Ivory Coast.
 
 ```{r}
+#| label: final-shotmap
+#| fig-cap: "Top 5 Shooters' Heatmap for Ivory Coast"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -242,8 +272,10 @@ Overall, it appears from the shot maps that Ivory Coast had a well organised at
 #### [Goals and Assists]{.underline}
 
 ```{r}
+#| labels: fig-combined-goals-and-assists
+#| tbl-cap: "Combined Goals and Assists Table"
 #| echo: false
-readRDS("combined_goals_and_assists.rds")
+readRDS("combined_goals_and_assists.rds") |> knitr::kable()
 
 ```
 
@@ -253,6 +285,7 @@ From this goals and assists table, we can see that the goals have been spread th
 
 ```{r}
 #| label: top5_dribblers_heatmap
+#| fig-cap: "Heatmap of Top 5 dribblers for Ivory Coast"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -270,17 +303,21 @@ The defensive data highlights that Kessié and Seri were the most efficient defe
 
 In the wider defensive areas, both Konan and Singo were involved in a large number of duels and recoveries. Both recorded rather low percentages for their duels won, however, they both excelled at other areas such as interceptions and clearances. The low percentage duels won indicate they were facing difficult one on one situations.
 
-Overall, the table highlights that their defensice strength came from the effectiveness of their midfield, which was supported by the aggressive nature of their fullbacks.
+Overall, the table highlights that their defensive strength came from the effectiveness of their midfield, which was supported by the aggressive nature of their fullbacks.
 
 ```{r}
+#| label: defensive-stats
+#| tbl-cap: "Ivory Coast Defensive stats by players"
 #| echo: false
-readRDS("defensive_stats.rds")
+readRDS("defensive_stats.rds") |> knitr::kable()
 
 ```
 
 #### [Top 5 Passers]{.underline}
 
 ```{r}
+#| label: top5-passers-heatmap
+#| fig-cap: "Heatmap of Passing Areas for Ivory Coast"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -299,8 +336,10 @@ This attacking data table highlights that Seko Fofana is one of the most influen
 There is a huge reliance on the fullbacks in buildup with Konan, Aurier and Singo who have high entries into and touches in the final 3rd, with a huge amount of progressive passes. This further indicates that there was a huge reliance on width, and the players involved supported efficiently.
 
 ```{r}
+#| label: attacking-metrics
+#| tbl-cap: "Ivory Coast Attacking Metrics"
 #| echo: false
-readRDS("attacking_metrics.rds")
+readRDS("attacking_metrics.rds") |> knitr::kable()
 
 ```
 
