@@ -1,7 +1,6 @@
+#Installation and Uploading of libraries ----
 install.packages("devtools")
 devtools::install_github("statsbomb/StatsBombR")
-1
-1
 library(StatsBombR)
 library(tidyverse)
 library(dplyr)
@@ -15,13 +14,13 @@ library(bslib)
 library(DT)
 install.packages("tinytex")
 library(tinytex)
-N
 install.packages("shinylive")
 ninstall.packages("shinydashboard")
 install.packages("gt")
 install.packages("bslib")
 install.packages("DT")
-instal
+
+# Finding the competitions ----
 
 competitions <- FreeCompetitions()
 
@@ -53,14 +52,14 @@ teams <- afcon_matches %>%
 
 view(teams)
 
-# Total Tournament Goals 
+## Total Tournament Goals ----
 
 total_afcon_goals <- afcon_matches %>%
   select(home_team.home_team_name, away_team.away_team_name, home_score, away_score) %>%
   mutate(total_goals = home_score + away_score) %>%
   summarise(total_goals = sum(total_goals))
 
-# Total Team Goals per round ----
+## Total Team Goals per round ----
 
 # Get all shots/goals from all matches
 all_events <- bind_rows(
@@ -71,7 +70,7 @@ all_events <- bind_rows(
   })
 )
 
-# Goals per team per game
+## Goals per team per game ----
 goals_table <- all_events %>%
   filter(type.name == "Shot", shot.outcome.name == "Goal") %>%
   filter(period != 5) %>% 
@@ -79,7 +78,7 @@ goals_table <- all_events %>%
   summarise(goals = n(), .groups = "drop") %>%
   left_join(afcon_matches %>% select(match_id, competition_stage.name), by = "match_id")
 
-# Total goals per team with breakdown
+## Total goals per team with breakdown ----
 goalsperteam_table <- goals_table %>%
   group_by(team.name) %>%
   summarise(
@@ -128,7 +127,7 @@ cumgoals <- ggplot(goals_cumulative, aes(x = competition_stage.name, y = cumulat
 
 ggplotly(cumgoals, tooltip = "text")
 
-# Where each team finished -----
+## Where each team finished -----
 
 team_rounds <- afcon_matches %>%
   pivot_longer(cols = c(home_team.home_team_name, away_team.away_team_name), 
@@ -159,541 +158,8 @@ team_rounds <- afcon_matches %>%
 view(team_rounds)
 
 
-
-
-
-#NIGERIA SECTION ----
-
-nigeria_matches <- afcon_matches %>%
-  filter(home_team.home_team_name == "Nigeria" | away_team.away_team_name == "Nigeria")
-
-view(nigeria_matches)
-
-# Nigeria game 1 
-nigeria_groupstage_game1 <- nigeria_matches %>% 
-  filter(match_id == 3920398)
-nigeria_groupstage_game1_events <- nigeria_groupstage_game1 %>% 
-  get.matchFree()
-nigeria_groupstage_game1_xg <- nigeria_groupstage_game1_events %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_groupstage_game1_totalteamxg <- nigeria_groupstage_game1_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_groupstage_game1_totalteamxg
-
-#Nigeria Game 2
-nigeria_groupstage_game2 <- nigeria_matches %>% 
-  filter(match_id == 3920409)
-nigeria_groupstage_game2_events <- nigeria_groupstage_game2 %>% 
-  get.matchFree()
-nigeria_groupstage_game2_xg <- nigeria_groupstage_game2_events %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-view(nigeria_groupstage_game2_xg)
-nigeria_groupstage_game2_totalteamxg <- nigeria_groupstage_game2_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_groupstage_game2_totalteamxg
-
-#Nigeria Group Stage Game 3 
-nigeria_groupstage_game3 <- nigeria_matches %>% 
-  filter(match_id == 3920386)
-nigeria_groupstage_game3_events <- nigeria_groupstage_game3 %>% 
-  get.matchFree()
-nigeria_groupstage_game3_xg <- nigeria_groupstage_game3_events %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-view(nigeria_groupstage_game3_xg)
-nigeria_groupstage_game3_totalteamxg <- nigeria_groupstage_game3_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_groupstage_game3_totalteamxg
-
-#Nigeria Round Of 16
-nigeria_RO16 <- nigeria_matches %>% 
-  filter(match_id == 3922238)
-nigeria_RO16_events <- nigeria_RO16 %>% 
-  get.matchFree()
-nigeria_RO16_xg <- nigeria_RO16_events  %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_RO16_totalteamxg <- nigeria_RO16_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_RO16_totalteamxg
-
-#Nigeria Quarter Final
-nigeria_quarterfinal <- nigeria_matches %>% 
-  filter(match_id == 3922321)
-nigeria_quarterfinal_event <- nigeria_quarterfinal %>% 
-  get.matchFree()
-nigeria_quarterfinal_xg <- nigeria_quarterfinal_event  %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_quarterfinal_totalteamxg <- nigeria_quarterfinal_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_quarterfinal_totalteamxg
-
-#Nigeria Semi Final
-nigeria_semifinal <- nigeria_matches %>% 
-  filter(match_id == 3922837)
-nigeria_semifinal_event <- nigeria_semifinal %>% 
-  get.matchFree()
-nigeria_semifinal_xg <- nigeria_semifinal_event  %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_semifinal_totalteamxg <- nigeria_semifinal_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-
-nigeria_semifinal_totalteamxg
-
-# Nigeria Final 
-nigeria_final <- nigeria_matches %>% 
-  filter(match_id == 3923881)
-nigeria_final_event <- nigeria_final %>% 
-  get.matchFree()
-nigeria_final_xg <- nigeria_final_event  %>% 
-  filter(type.name == "Shot", period != 5) %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_final_totalteamxg <- nigeria_final_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-nigeria_final_totalteamxg
-
-nigeria_totalcompetiton_xg <- nigeria_groupstage_game1_totalteamxg$total_xg + nigeria_groupstage_game2_totalteamxg$total_xg + nigeria_groupstage_game3_totalteamxg$total_xg + nigeria_RO16_totalteamxg$total_xg + nigeria_quarterfinal_totalteamxg$total_xg + nigeria_semifinal_totalteamxg$total_xg + nigeria_final_totalteamxg$total_xg
-#9.754533
-
-
-
-combinedxg_IvoryCoast_Nigeria <- data.frame(
-  Team = c("Ivory Coast", "Nigeria"),
-  Total_xG = c(ivorycoast_totalcompetiton_xg, nigeria_totalcompetiton_xg)
-)
-
-nigeria_xg_table <- data.frame(
-  team = "Nigeria",
-  round = c("Group Stage Game 1", "Group Stage Game 2", "Group Stage Game 3", 
-            "Round of 16", "Quarter Final", "Semi Final", "Final"),
-  xg = c(
-    round(nigeria_groupstage_game1_totalteamxg$total_xg, 2),
-    round(nigeria_groupstage_game2_totalteamxg$total_xg, 2),
-    round(nigeria_groupstage_game3_totalteamxg$total_xg, 2),
-    round(nigeria_RO16_totalteamxg$total_xg, 2),
-    round(nigeria_quarterfinal_totalteamxg$total_xg, 2),
-    round(nigeria_semifinal_totalteamxg$total_xg, 2),
-    round(nigeria_final_totalteamxg$total_xg, 2)
-  )
-)
-
-ivorycoast_xg_table <- data.frame(
-  team = "Côte d'Ivoire",
-  round = c("Group Stage Game 1", "Group Stage Game 2", "Group Stage Game 3", 
-            "Round of 16", "Quarter Final", "Semi Final", "Final"),
-  xg = c(
-    round(ivorycoast_groupstage_game1_totalteamxg$total_xg, 2),
-    round(ivorycoast_groupstage_game2_totalteamxg$total_xg, 2),
-    round(ivorycoast_groupstage_game3_totalteamxg$total_xg, 2),
-    round(ivorycoast_ro16_totalteamxg$total_xg, 2),
-    round(ivorycoast_quarterfinal_totalteamxg$total_xg, 2),
-    round(ivorycoast_semifinal_totalteamxg$total_xg, 2),
-    round(ivorycoast_final_totalteamxg$total_xg, 2)
-  )
-)
-
-# Add totals row to each
-nigeria_xg_table <- bind_rows(
-  nigeria_xg_table,
-  data.frame(team = "Nigeria", round = "TOTAL", xg = round(nigeria_totalcompetiton_xg, 2))
-)
-
-ivorycoast_xg_table <- bind_rows(
-  ivorycoast_xg_table,
-  data.frame(team = "Côte d'Ivoire", round = "TOTAL", xg = round(ivorycoast_totalcompetiton_xg, 2))
-)
-
-# View them
-nigeria_xg_table
-ivorycoast_xg_table
-
-# Or combined into one table
-combined_xg_table <- bind_rows(nigeria_xg_table, ivorycoast_xg_table)
-combined_xg_table
-
-
-
-# XG per game comparison per round for Ivory Coast and Nigeria 
-plot_data <- combined_xg_table %>%
-  filter(round != "TOTAL") %>%
-  mutate(round = factor(round, levels = c(
-    "Group Stage Game 1", "Group Stage Game 2", "Group Stage Game 3",
-    "Round of 16", "Quarter Final", "Semi Final", "Final"
-  )))
-
-ggplot(plot_data, aes(x = round, y = xg, colour = team, group = team)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 3) +
-  geom_label(aes(label = xg), nudge_y = 0.1, size = 3, show.legend = FALSE) +
-  scale_colour_manual(values = c(
-    "Nigeria" = "#008000",
-    "Côte d'Ivoire" = "#FF6600"
-  )) +
-  labs(
-    title = "xG Throughout the AFCON Tournament",
-    subtitle = "Nigeria vs Côte d'Ivoire",
-    x = "Round",
-    y = "xG",
-    colour = "Team"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "top"
-  )
-
-
-
-#Accumulative xg graph for two finalists throughout the tournament 
-
-plot_data_cumulative <- combined_xg_table %>%
-  filter(round != "TOTAL") %>%
-  mutate(round = factor(round, levels = c(
-    "Group Stage Game 1", "Group Stage Game 2", "Group Stage Game 3",
-    "Round of 16", "Quarter Final", "Semi Final", "Final"
-  ))) %>%
-  group_by(team) %>%
-  mutate(cumulative_xg = cumsum(xg)) %>%
-  ungroup()
-
-ggplot(plot_data_cumulative, aes(x = round, y = cumulative_xg, colour = team, group = team)) +
-  geom_line(linewidth = 1.2) +
-  geom_point(size = 3) +
-  geom_label(aes(label = round(cumulative_xg, 2)), nudge_y = 0.3, size = 3, show.legend = FALSE) +
-  scale_colour_manual(values = c(
-    "Nigeria" = "#008000",
-    "Côte d'Ivoire" = "#FF6600"
-  )) +
-  labs(
-    title = "Cumulative xG Throughout the AFCON Tournament",
-    subtitle = "Nigeria vs Côte d'Ivoire",
-    x = "Round",
-    y = "Cumulative xG",
-    colour = "Team"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "top"
-  )
-
-
-
-
-
-
-
-
-
-
-# AFCON Final
-
-final_afcon <- afcon_matches %>% 
-  filter(match_id == 3923881)
-
-view(final_afcon)
-final_events <- final_afcon %>% 
-  get.matchFree()
-
-view(final_events)
-glimpse(final_events)
-
-xg_final <- final_events %>% 
-  filter(type.name == "Shot") %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg)
-view(xg_final)
-
-
-xg_plot <- xg_final %>%
-  mutate(time = minute + second / 60) %>%   # create continuous match time
-  arrange(possession_team.name, time) %>%
-  group_by(possession_team.name) %>%
-  mutate(cum_xg = cumsum(shot.statsbomb_xg)) %>%
-  ungroup()
-
-
-ggplot(xg_plot, aes(x = time, y = cum_xg, colour = possession_team.name)) +
-  geom_step(size = 1.2) +
-  labs(
-    title = "Cumulative Expected Goals (xG)",
-    x = "Match Time (minutes)",
-    y = "Cumulative xG",
-    colour = "Team"
-  ) +
-  theme_minimal()
-
-
-
-
-
-#Crafting a Table ----
-
-# Who had more possession ----
-
-possession_nigeria_final <- final_events %>%
-  summarise(
-    nigeria_poss = round(mean(possession_team.name == "Nigeria") * 100, 1)
-  )
-possession_ivorycoast_final <- final_events %>% 
-  summarise(
-    ivc_poss = round(mean(possession_team.name == "Côte d'Ivoire") * 100, 1)
-  )
-
-possession_final <- final_events %>% 
-  summarise(
-    nigeria_poss = round(mean(possession_team.name == "Nigeria") * 100, 1),
-    ivc_poss = round(mean(possession_team.name == "Côte d'Ivoire") * 100, 1)
-  )
-
-#xG per team in the final ----
-
-# Nigeria
-
-nigeria_final <- nigeria_matches %>% 
-  filter(match_id == 3923881)
-nigeria_final_event <- nigeria_final %>% 
-  get.matchFree()
-nigeria_final_xg <- nigeria_final_event  %>% 
-  filter(type.name == "Shot") %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Nigeria")
-nigeria_final_totalteamxg <- nigeria_final_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-nigeria_final_totalteamxg
-nigeria_final_totalteamxg$total_xg
-
-# Ivory Coast
-
-ivorycoast_final <- ivorycoast_matches %>% 
-  filter(match_id == 3923881)
-ivorycoast_final_event <- ivorycoast_final %>% 
-  get.matchFree()
-ivorycoast_final_xg <- ivorycoast_final_event  %>% 
-  filter(type.name == "Shot") %>% 
-  select(id, minute, second, possession_team.name, player.name, shot.outcome.name, shot.statsbomb_xg, team.name) %>%
-  filter(team.name == "Côte d'Ivoire")
-ivorycoast_final_totalteamxg <- ivorycoast_final_xg %>% 
-  summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
-ivorycoast_final_totalteamxg
-
-# Big Chances ----
-
-bc_nigeria_final <- final_events %>%
-  filter(type.name == "Shot", possession_team.name == "Nigeria",
-         shot.statsbomb_xg > 0.3) %>%
-  nrow()
-
-bc_ivorycoast_final <- final_events %>% 
-  filter(type.name == "Shot", possession_team.name == "Côte d'Ivoire",
-         shot.statsbomb_xg > 0.3) %>% 
-  nrow()
-
-#Total Shots per team ---- 
-
-nigeria_shots_final <- final_events %>% 
-  filter(type.name == "Shot", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_shots_final <- final_events %>% 
-  filter(type.name == "Shot", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-#Shots on targets per team ----
-nigeria_sot_final <- final_events %>% 
-  filter(type.name == "Shot", shot.outcome.name %in% c("Saved", "Goal"), possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_sot_final <- final_events %>% 
-  filter(type.name == "Shot", shot.outcome.name %in% c("Saved", "Goal", possession_team.name == "Côte d'Ivoire")) %>% 
-  nrow()
-
-#Corners ----
-
-nigeria_corners_final <- final_events %>% 
-  filter(pass.type.name == "Corner", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_corner_final <- final_events %>% 
-  filter(pass.type.name == "Corner", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-#Fouls
-
-nigeria_fouls_final <- final_events %>% 
-  filter(type.name == "Foul Committed", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-ivorycoast_fouls_final <- final_events %>% 
-  filter(type.name == "Foul Committed", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-#Total passes in the final
-
-nigeria_passes_final <- final_events %>% 
-  filter(type.name == "Pass", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_passes_final <- final_events %>% 
-  filter(type.name == "Pass", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-#Tackles
-
-nigeria_tackles_final <- final_events %>% 
-  filter(duel.type.name == "Tackle", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_tackles_final <- final_events %>% 
-  filter(duel.type.name == "Tackle", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-#Free Kicks 
-
-nigeria_freekicks_final <- final_events %>% 
-  filter(pass.type.name == "Free Kick", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-ivorycoast_freekicks_final <- final_events %>% 
-  filter(pass.type.name == "Free Kick", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-#Yellow Cards 
-nigeria_yellowcards_final <- final_events %>% 
-  filter(bad_behaviour.card.name == "Yellow Card", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-ivorycoast_yellowcards_final <- final_events %>% 
-  filter(bad_behaviour.card.name == "Yellow Card", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-# Red Cards
-
-nigeria_redcard_final <- final_events %>% 
-  filter(bad_behaviour.card.name == "Red Card", possession_team.name == "Côte d'Ivoire") %>% 
-  nrow()
-
-ivorycoast_redcard_final <- final_events %>% 
-  filter(bad_behaviour.card.name == "Red Card", possession_team.name == "Nigeria") %>% 
-  nrow()
-
-final_stats <- data_frame(
-  Nigeria = c(
-    possession_nigeria_final,
-    round(nigeria_final_totalteamxg$total_xg, 2),
-    bc_nigeria_final,
-    nigeria_shots_final,
-    nigeria_sot_final,
-    nigeria_corners_final,
-    nigeria_fouls_final,
-    nigeria_passess_final, 
-    nigeria_tackles_final, 
-    nigeria_freekicks_final,
-    nigeria_yellowcards_final, 
-    nigeria_redcard_final
-  ),
-  Stat = c("Possession (%)", "xG", "Big Chance", "Total Shots", "Shots on Target", "Corners", "Fouls", "Passes", "Tackles", "Free Kicks", "Yellow Cards", "Red Cards"),
-  `Côte d'Ivoire` = c(
-    possession_ivorycoast_final,
-    round(ivorycoast_final_totalteamxg$total_xg, 2),
-    bc_ivorycoast_final,
-    ivorycoast_shots_final,
-    ivorycoast_sot_final,
-    ivorycoast_corner_final,
-    ivorycoast_fouls_final,
-    ivorycoast_passes_final,
-    ivorycoast_tackles_final,
-    ivorycoast_freekicks_final,
-    ivorycoast_yellowcards_final,
-    ivorycoast_redcard_final
-  ),
-  check.names = FALSE
-)
-
-table <- match_stats %>%
-  gt() %>%
-  tab_header(
-    title    = md("**AFCON 2023 Final**"),
-    subtitle = md("**Nigeria vs Côte d'Ivoire**")
-  ) %>%
-  cols_align(align = "center", columns = everything()) %>%
-  cols_label(
-    Nigeria = md("🇳🇬 **Nigeria**"),
-    Stat = "",
-    `Côte d'Ivoire` = md("🇨🇮 **Côte d'Ivoire**")
-  ) %>%
-  fmt_number(columns = c("Nigeria", "Côte d'Ivoire"), rows = 1,   decimals = 1) %>%
-  fmt_number(columns = c("Nigeria", "Côte d'Ivoire"), rows = 2,   decimals = 2) %>%
-  fmt_number(columns = c("Nigeria", "Côte d'Ivoire"), rows = 3:12, decimals = 0) %>%
-  tab_style(
-    style = list(cell_fill(color = "#1e1e2e"),
-                     cell_text(color = "white", weight = "bold", size = px(16))),
-    locations = cells_title()
-  ) %>%
-  tab_style(
-    style = list(cell_fill(color = "#2a2a3e"),
-                     cell_text(color = "white", weight = "bold")),
-    locations = cells_column_labels()
-  ) %>%
-  tab_style(
-    style = list(cell_fill(color = "#12421a"),
-                     cell_text(color = "white", weight = "bold")),
-    locations = cells_body(columns = "Nigeria")
-  ) %>%
-  tab_style(
-    style = list(cell_fill(color = "#5a2000"),
-                     cell_text(color = "white", weight = "bold")),
-    locations = cells_body(columns = "Côte d'Ivoire")
-  ) %>%
-  tab_style(
-    style = list(cell_fill(color = "#1e1e2e"),
-                     cell_text(color = "#cccccc", style = "italic")),
-    locations = cells_body(columns = "Stat")
-  ) %>%
-  tab_style(
-    style  = cell_fill(color = "#161626"),
-    locations = cells_body(rows = seq(1, 12, 2))
-  ) %>%
-  tab_style(
-    style = cell_fill(color = "#12421a"),
-    locations = cells_body(columns = "Nigeria", rows = seq(1, 12, 2))
-  ) %>%
-  tab_style(
-    style     = cell_fill(color = "#5a2000"),
-    locations = cells_body(columns = "Côte d'Ivoire", rows = seq(1, 12, 2))
-  ) %>%
-  tab_options(
-    table.background.color = "#1e1e2e",
-    table.border.top.color = "transparent",
-    table.border.bottom.color = "transparent",
-    column_labels.border.top.color = "transparent",
-    column_labels.border.bottom.color = "#444466",
-    data_row.padding = px(10),
-    table.font.size = px(14)
-  ) %>%
-  tab_source_note(source_note = md("*Data: StatsBomb*"))
-
-
-
 ###################################
-#Tournament overview ivory Coast 
+#Tournament overview ivory Coast ----
 
 
 ivory_coast_timeline <- ivorycoast_matches %>%
@@ -713,14 +179,14 @@ ivory_coast_timeline
 
 saveRDS(ivory_coast_timeline, "ivory_coast_timeline.rds")
 
-#xG per game 
+## xG per game ----
 
 
 ivorycoast_matches <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | away_team.away_team_name == "Côte d'Ivoire")
 view(ivorycoast_matches)
 
-#Ivory coast groupstage game 1 
+##Ivory coast groupstage game 1 ----
 ivorycoast_groupstage_game1 <- ivorycoast_matches %>% 
   filter(match_id == 3920384)
 ivorycoast_groupstage_game1_events <- ivorycoast_groupstage_game1 %>% 
@@ -734,7 +200,7 @@ ivorycoast_groupstage_game1_totalteamxg <- ivorycoast_groupstage_game1_xg %>%
 
 ivorycoast_groupstage_game1_totalteamxg
 
-#Ivory Coast Group Stage game 2 
+## Ivory Coast Group Stage game 2 ----
 
 ivorycoast_groupstage_game2 <- ivorycoast_matches %>% 
   filter(match_id == 3920398)
@@ -749,7 +215,7 @@ ivorycoast_groupstage_game2_totalteamxg <- ivorycoast_groupstage_game2_xg %>%
 
 ivorycoast_groupstage_game2_totalteamxg
 
-#Ivory Coast Group Stage game 3 
+## Ivory Coast Group Stage game 3 ----
 
 ivorycoast_groupstage_game3 <- ivorycoast_matches %>% 
   filter(match_id == 3920408)
@@ -764,7 +230,7 @@ ivorycoast_groupstage_game3_totalteamxg <- ivorycoast_groupstage_game3_xg %>%
 
 ivorycoast_groupstage_game3_totalteamxg
 
-#Ivory Coast Round of 16 
+## Ivory Coast Round of 16 ----
 
 ivorycoast_ro16 <- ivorycoast_matches %>% 
   filter(match_id == 3922659)
@@ -779,7 +245,7 @@ ivorycoast_ro16_totalteamxg <- ivorycoast_ro16_xg %>%
 
 ivorycoast_ro16_totalteamxg
 
-#Ivory Coast Quarter Final
+## Ivory Coast Quarter Final ----
 
 ivorycoast_quarterfinal <- ivorycoast_matches %>% 
   filter(match_id == 3922242)
@@ -794,7 +260,7 @@ ivorycoast_quarterfinal_totalteamxg <- ivorycoast_quarterfinal_xg %>%
 
 ivorycoast_quarterfinal_totalteamxg
 
-#Ivory Coast Semi Final
+## Ivory Coast Semi Final ----
 
 ivorycoast_semifinal <- ivorycoast_matches %>% 
   filter(match_id == 3922838)
@@ -810,7 +276,7 @@ ivorycoast_semifinal_totalteamxg <- ivorycoast_semifinal_xg %>%
 ivorycoast_semifinal_totalteamxg
 
 
-#Ivory Coast Final
+## Ivory Coast Final ----
 
 ivorycoast_final <- ivorycoast_matches %>% 
   filter(match_id == 3923881)
@@ -824,7 +290,7 @@ ivorycoast_final_totalteamxg <- ivorycoast_final_xg %>%
   summarise(total_xg = sum(shot.statsbomb_xg, na.rm = TRUE))
 ivorycoast_final_totalteamxg
 
-#Ivory Coast total team xg
+## Ivory Coast total team xg ----
 
 ivorycoast_totalcompetiton_xg <- ivorycoast_groupstage_game1_totalteamxg$total_xg + ivorycoast_groupstage_game2_totalteamxg$total_xg + ivorycoast_groupstage_game3_totalteamxg$total_xg + ivorycoast_ro16_totalteamxg$total_xg + ivorycoast_quarterfinal_totalteamxg$total_xg + ivorycoast_semifinal_totalteamxg$total_xg + ivorycoast_final_totalteamxg$total_xg
 #7.605106
@@ -911,7 +377,7 @@ draw_pitch <- function(pitch_fill = "#3a6b35") {
   )
 }
 
-#Overall stats 
+## Overall stats ----
 
 ivory_coast_summary <- data.frame(
   Stat = c(
@@ -941,18 +407,18 @@ ivory_coast_summary
 
 #KPIs - Matches Played, Goals Scored, xG Difference, Win % After Managerial Change ----
 
-# Total matches played
+##Total matches played ----
 
 ivorycoast_matchesplayed <- nrow(ivorycoast_matches)
 
-# Total goals 
+## Total goals ---- 
 
 ivorycoast_totalgoals <- all_events %>% 
   filter(type.name == "Shot", shot.outcome.name == "Goal", possession_team.name == "Côte d'Ivoire") %>% 
   filter(period != 5) %>% 
   nrow
 
-#xG difference 
+## xG difference ----
 
 ivorycoastxg_for_and_against <- all_events %>% 
   filter(type.name == "Shot") %>%
@@ -969,7 +435,7 @@ ivorycoastxg_for_and_against <- all_events %>%
 ivorycoast_total_xg_diff <- ivorycoastxg_for_and_against %>%
   summarise(total_xg_diff = round(sum(xg_diff), 2))
 
-# Managerial win percentage before and after sacking 
+## Managerial win percentage before and after sacking ----
 
 ivorycoast_manager_comparison <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | 
@@ -999,7 +465,7 @@ ivorycoast_manager_comparison <- ivorycoast_manager_comparison %>%
 #############################################################################################################################
 
 #Tactical Changes ----
-##Passing Structures
+##Passing Structures ----
 passing_data <- all_events %>%
   filter(team.name == "Côte d'Ivoire", type.name == "Pass") %>%
   filter(match_id %in% ivorycoast_matches$match_id) %>%
@@ -1030,7 +496,7 @@ ggsave("app/passing_heatmap.png", passing_heatmap, width = 10, height = 6)
 
 saveRDS(passing_heatmap, "passing_heatmap.rds")
 
-# Comparison of shot areas between the two managers 
+## Comparison of shot areas between the two managers ----
 
 ivorycoast_shots_manager <- all_events %>%
   filter(type.name == "Shot",
@@ -1112,7 +578,8 @@ manager_comparison_shotmap <- ggplot(ivorycoast_shots_manager) +
 saveRDS(manager_comparison_shotmap, "manager_comparison_shotmap.rds")
 
 ggplotly(manager_comparison_shotmap, tooltip = "text")
-#Compore the shot conceded and xg performance between the two managers http://127.0.0.1:9383/graphics/plot_zoom_png?width=2115&height=1103
+
+## Compare the shot conceded and xg performance between the two managers ----  
 
 ivorycoast_managers_shotsconceded_xgagainst <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | 
@@ -1151,7 +618,7 @@ ivorycoast_managers_shotsconceded_xgagainst <- afcon_matches %>%
 ivorycoast_managers_shotsconceded_xgagainst
 saveRDS(ivorycoast_managers_shotsconceded_xgagainst, "ivorycoast_managers_shotsconceded_xgagainst.rds")
 
-#Dribble heat map comparison 
+## Dribble heat map comparison ----
 
 dribble_manager <-  all_events %>%
   dplyr::filter(team.name == "Côte d'Ivoire",
@@ -1178,7 +645,7 @@ dribble_manager_comparison_plot <- ggplot(dribble_manager, aes(x = x, y = y)) +
   theme(strip.text = element_text(colour = "white", face = "bold", size = 12))
 saveRDS(dribble_manager_comparison_plot, "dribble_manager_comparison_plot.rds")
 
-# Defensice actions per manager comparison 
+## Defensive actions per manager comparison ----
 
 defensive_actions_manager_comparison <- all_events %>%
   filter(team.name == "Côte d'Ivoire",
@@ -1214,7 +681,7 @@ defensive_actions_manager_comparison
 saveRDS(defensive_actions_manager_comparison, "defensive_actions_manager_comparison.rds")
 
 
-# Shot quality vs quantity 
+## Shot quality vs quantity  ----
 
 shotquality_vs_quantity <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | 
@@ -1276,7 +743,7 @@ saveRDS(shotquality_vs_quantity, "shotquality_vs_quantity.rds")
 
 
 
-# Set piece efficiency -> goals, shots, shots on targets, big chances 
+## Set piece efficiency -> goals, shots, shots on targets, big chances ----
 
 ivorycoast_setpiece_efficiency <- afcon_matches %>%
   filter(home_team.home_team_name == "Côte d'Ivoire" | 
@@ -1320,9 +787,8 @@ ivorycoast_setpiece_efficiency <- afcon_matches %>%
 
 # Key Players ----
 
-# Shot map of best performing attackers 
+## Shot map of best performing attackers ----
 
-# Get top 5 Ivory Coast shooters across all their matches
 ivorycoast_top5_shooters <- all_events %>%
   filter(type.name == "Shot", team.name == "Côte d'Ivoire", period != 5) %>%
   count(player.name, sort = TRUE) %>%
@@ -1402,28 +868,28 @@ final_shotmap <- ggplot(ivorycoast_top5_shooters) +
   theme(
     plot.background  = element_rect(fill = "#1e1e2e", color = NA),
     panel.background = element_rect(fill = "#1e1e2e", color = NA),
-    plot.title       = element_text(color = "#f0f0f0", face = "bold",
+    plot.title = element_text(color = "#f0f0f0", face = "bold",
                                     hjust = 0.5, size = 16,
                                     margin = margin(t = 14, b = 4)),
-    plot.caption     = element_text(color = "#666666", hjust = 0.98,
+    plot.caption = element_text(color = "#666666", hjust = 0.98,
                                     size = 9, margin = margin(t = 6, b = 10)),
-    strip.text       = element_text(color = "white", face = "bold",
+    strip.text = element_text(color = "white", face = "bold",
                                     size = 11, margin = margin(b = 6)),
-    plot.margin      = margin(10, 20, 10, 20),
+    plot.margin = margin(10, 20, 10, 20),
     legend.position  = "bottom",
-    legend.text      = element_text(color = "white", size = 9),
-    legend.title     = element_text(color = "white", size = 10)
+    legend.text = element_text(color = "white", size = 9),
+    legend.title = element_text(color = "white", size = 10)
   ) +
   guides(
     color = guide_legend(override.aes = list(size = 4), nrow = 1),
-    size  = guide_legend(nrow = 1)
+    size = guide_legend(nrow = 1)
   )
 
 
 
 saveRDS(final_shotmap, "final_shotmap.rds")
 
-# Table of goals and assists for ivory coast 
+## Table of goals and assists for ivory coast ----
 goals_graph <- all_events %>%
   filter(type.name == "Shot", shot.outcome.name == "Goal", team.name == "Côte d'Ivoire", period != 5) %>%
   count(player.name, sort = TRUE)
@@ -1444,7 +910,7 @@ combined_goals_and_assists <- combined_goals_and_assists %>%
   replace_na(list(Goals = 0, Assists = 0))
 saveRDS(combined_goals_and_assists, "combined_goals_and_assists.rds")
 
-# Dribbling stats 
+## Dribbling stats ----
 
 dribbling_stats <- all_events %>%
   filter(team.name == "Côte d'Ivoire", type.name == "Dribble") %>%
@@ -1544,7 +1010,7 @@ top5_dribble_heatmap <- ggplot(dribble_locations, aes(x = x, y = y)) +
 saveRDS(top5_dribble_heatmap,"top5_dribble_heatmap.rds")
 
 
-# Defensive actions -> tackles, blocks etc 
+## Defensive actions -> tackles, blocks etc ----
 
 tackle_stats <- all_events %>%
   filter(team.name == "Côte d'Ivoire", 
@@ -1586,7 +1052,7 @@ saveRDS(defensive_stats, "defensive_stats.rds")
 
 view(defensive_stats)
 
-# Top 5 Passers 
+## Top 5 Passers ----
 
 top5_passers <- all_events %>%
   dplyr::filter(team.name == "Côte d'Ivoire", type.name == "Pass") %>%
@@ -1621,7 +1087,7 @@ top5_passers_heatmap <- ggplot(pass_locations, aes(x = x, y = y)) +
 saveRDS(top5_passers_heatmap, "top5_passers_heatmap.rds")
 
 
-#Attacking metrics table
+## Attacking metrics table ----
 
 attacking_metrics <- all_events %>%
   filter(team.name == "Côte d'Ivoire") %>%
@@ -1654,18 +1120,7 @@ saveRDS(attacking_metrics, "attacking_metrics.rds")
 
 # Was it deserved ----
 
-
-# Finishing efficiency
-
-
-# Compare stats with opponents 
-
-# Show analysis of the final
-
-# Compare the stats and performance between Nigeria and Ivory Coast from the match in the group stage and the one in the final
-
-
-#Total team goals
+## Total team goals ----
 
 goalsperteam_table <- goals_table %>%
   group_by(team.name) %>%
@@ -1679,9 +1134,9 @@ goalsperteam_table <- goals_table %>%
   ) %>%
   arrange(desc(total_goals))
 
-# cumulative xg graph compared to Nigeria 
 
-#Metric to see who deserved to win 
+
+##Metric to see who deserved to win ----
 
 deserved_winner_tournament <- all_events %>%
   filter(period != 5) %>%
