@@ -1731,7 +1731,7 @@ deserved_winner_tournament <- all_events %>%
     shot_assists_pg = round(shot_assists/matches, 1),
     passes_pg = round(passes/matches, 1),
     progressive_passes_pg = round(progressive_passes/matches, 1),
-    dribbles_pg = round(dribble/matches, 1),
+    dribbles_pg = round(dribbles/matches, 1),
     carries_final3rd_pg = round(carries_final3rd/matches, 1),
     box_entries_pg = round(box_entries/matches, 1),
     touches_final3rd_pg = round(touches_final3rd/matches, 1),
