@@ -14,6 +14,6 @@ Football Event data pulled from StatsbombR via devtools::install_github("statsbo
 
 ## Repository layout
 
--   `app/` — the Shiny app (`app.R` and `NEWAFCONDATA2.RData`)
+-   `app/` — the Shiny app (`app.R` and `NEWAFCONDATA10.RData`)
 -   `docs/` — the Shinylive build served by GitHub Pages
 -   `data/` — raw and cleaned data pulled from the API
