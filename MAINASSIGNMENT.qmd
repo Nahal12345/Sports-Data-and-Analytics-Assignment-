@@ -35,7 +35,7 @@ format:
 
 AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerse Faé, who was the Ivory Coast under 23 coach.
 
-Following this there was an unexpected revival, with Ivory Coast which led to AFCON victory. Faé's side beat Senegal in the Round of 16, Mali in the Quarter Final, Democratic Republic of Congo in the Semi Final, and then defeated Nigeria in the final, which was one of the teams that they had previously lost to in the group stage. They did not just beat them, they beat them convincingly as they dominated the final. The transformation between the two managers was visible, but the question that this report seeks to answer is whether the data supports the outcome: How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and was it deserved?
+Following this there was an unexpected revival, with Ivory Coast which led to AFCON victory. Faé's side beat Senegal in the Round of 16, Mali in the Quarter Final, Democratic Republic of Congo in the Semi Final, and then defeated Nigeria in the final, which was one of the teams that they had previously lost to in the group stage. They did not just beat them, they beat them convincingly as they dominated the final. The transformation between the two managers was visible, but the question that this report seeks to answer is whether the data supports the outcome: How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and does the data back them up?
 
 The question is interesting because football tournaments can be won due to pure luck and individual brilliance whilst also posting poor underlying numbers. In contrast, a dominant team can lose to a single moment . Expected Goals (xG), defensive action metrics, attacking metrics and shot quality data offers a way to cut through the narrative and allows us to analyse what exactly is happening with the players on the pitch.
 
@@ -212,12 +212,12 @@ Furthermore, the defensive metrics used have reinforced the improvement in their
 #| label: defensive-actions-manager-comparison
 #| tbl-cap: "Defensive Actions between Managers"
 #| cho: false
-readRDS("defensive_actions_manager_comparison") |> knitr::kable()
+readRDS("defensive_actions_manager_comparison.rds") |> knitr::kable()
 ```
 
 #### [Passing Structure]{.underline}
 
-Figure 3 compares heat maps of passes under each manager.
+@fig-passing_heatmap compares heat maps of passes under each manager.
 
 ```{r}
 #| label: passing_heatmap
@@ -228,14 +228,14 @@ Figure 3 compares heat maps of passes under each manager.
 readRDS("passing_heatmap.rds")
 ```
 
-Both heat maps are very similar with very high concentration in deeper and wider areas. This is further supported by the (PROGRESSIVE PASSING TABLE) which illustrates the full backs were very influential in progressive passes. The central concentration is higher under Faé, suggesting that the midfielders were receiving the ball in more advanced areas, suggesting a more attacking approach.
+Both heat maps are very similar with very high concentration in deeper and wider areas. This is further supported by the @tbl-progressive-metrics which illustrates the full backs were very influential in progressive passes. The central concentration is higher under Faé, suggesting that the midfielders were receiving the ball in more advanced areas, suggesting a more attacking approach.
 
 #### [Dribble Areas]{.underline}
 
-Figure 4 compares Ivory Coast's dribble density under each manager.
+@fig-dribble-manager-comparison-plot compares Ivory Coast's dribble density under each manager.
 
 ```{r}
-#| label: dribble-manager-comparison-plot
+#| label: fig-dribble-manager-comparison-plot
 #| fig-cap: "Dribble Heatmap Comparison By Manager"
 #| echo: false
 #| fig-width: 10
@@ -251,10 +251,10 @@ Under Gasset, there are very similar dribbling patterns where the wing areas hav
 
 #### [Shot Map]{.underline}
 
-Figure 5 below illustrates the shot maps of the top five shooters for Ivory Coast.
+@fig-final-shotmap below illustrates the shot maps of the top five shooters for Ivory Coast.
 
 ```{r}
-#| label: final-shotmap
+#| label: fig-final-shotmap
 #| fig-cap: "Top 5 Shooters' Heatmap for Ivory Coast"
 #| echo: false
 #| fig-width: 10
@@ -330,12 +330,12 @@ Distribution from the flanks was also important for Ivory Coast with Singo and K
 
 #### [Progressive Stats]{.underline}
 
-This attacking data table highlights that Seko Fofana is one of the most influential offensive players. He ranks highly in four out of the 6 metrics, with only progressive passing and box entries being his weak points. Simon Adingra and Oumar Diakaté both played major roles in attacks, with high amounts of in all metrics apart from progressive passes which indicates that they are always on the receiving end of progressive passes.
+This attacking data table highlights that Seko Fofana is one of the most influential offensive players. He ranks highly in four out of the 6 metrics, with only progressive passing and box entries being his weak points. Simon Adingra and Oumar Diakaté both played major roles in attacks, with high amounts in all metrics apart from progressive passes which indicates that they are always on the receiving end of progressive passes.
 
 There is a huge reliance on the fullbacks in buildup with Konan, Aurier and Singo who have high entries into and touches in the final 3rd, with a huge amount of progressive passes. This further indicates that there was a huge reliance on width, and the players involved supported efficiently.
 
 ```{r}
-#| label: attacking-metrics
+#| label: tbl-progressive-metrics
 #| tbl-cap: "Ivory Coast Progressive Metrics"
 #| echo: false
 readRDS("attacking_metrics.rds") |> head(5) |> knitr::kable()
@@ -347,6 +347,8 @@ readRDS("attacking_metrics.rds") |> head(5) |> knitr::kable()
 A metric was created to determine who deserved to win the tournament. A weighting was applied depending on what stage the team reached, with the final having a weight of 1, semi final 0.9, Quarter Final 0.85, Round of 16 0.8 and the Group Stage 0.75. This was done so that all factors could be taken into consideration, such as the amount of games they had to play and teams playing harder opponents later in the tournament. Attacking, progressive and defensive stats were also included in the metric.
 
 ```{r}
+#| label: tbl-deserved-winner-tournament
+#| tbl-cap: "Tournament's Deserved Winner"
 #| echo: false
 readRDS("deserved_winner_tournament.rds") |> head(5) |> knitr::kable()
 ```
@@ -381,6 +383,42 @@ There are several ways this analysis could be improved for future outlook. First
 
 ### [Conclusion]{.underline}
 
+This report set out to answer a single question: how did Ivory Coast win AFCON 2023 despite sacking their manager during the tournament, and does the data back them up?
+
+The data has provided a clear answer to this question. The managerial change from Jean-Louis Gasset to Emerse Faé produced a measurable improvement across all metrics of performance that have been examined. Average xG per shot rose from 0.074 to 0.083, shot percentage almost doubled from 19.6% to 31.4%, tackles had increased from 14.3 to 19.5 per game and pressures had increased from 104 to 141.8 per game. Alongside this, shots conceded and xG conceded per game also decreased. As a squad, their overall goal contributions were spread across their team, with no standout performer. When combining all the metrics, including the weighting score, in the deserved winner table, Ivory Coast were placed first in the ranking, whilst other finalists Nigeria placed in third. The conclusions from this table should be held with caution due to the weighting score used were all judgement calls and not the most complete way of weighting. This is due to not having enough data to judge the difficulty of the opponents, where the weighting used in this analysis was on how far a team went in the tournament.
+
+The game state limitation is also worth noting, as Ivory Coast would have been chasing the games as they were losing, meaning the data from the matches may have been inflated in attacking metrics and deflated in defensive metrics. This means that the gap between the two managers may not be quite as large as the raw data may suggest.
+
+Nevertheless, the raw data points to the conclusion that Ivory Coast won because of the managerial change. Faé had transformed a team that were struggling to create many high quality chances into one that was more direct and more clinical in front of goal. Defensively they became more organised and a much harder team to beat. Overall, the data illustrates that they deserved to win the title, and the change in manager was the biggest cause of this.
+
 {{< pagebreak >}}
 
+## List of AI tool used 
+
+-   Claude (Anthropic, 2025) . Claude.
+
+    \- Used to help clean up and develop code. Helped with errors and refining code used
+
+    \- Used to proofread to check my mistakes in writing
+
+-   Grammarly Inc. (2025). Grammarly
+
+    <https://www.grammarly.com/>
+
+    \- Support with grammar and structure of academic writing
+
+-   ChatGPT: Open AI (2025)
+
+<https://chat.openai.com>
+
+\- Assisted in paraphrasing, creating synonyms and helping structure certain paragraphs.
+
 ## References
+
+Chang, W., Cheng, J., Allaire, J., Sievert, C., Schloerke, B., Xie, Y., Allen, J., McPherson, J., Dipert, A. and Borges, B. (2024) *shiny: Web Application Framework for R* \[R package\]. Available at: <https://CRAN.R-project.org/package=shiny> (Accessed: 13 May 2026)
+
+R Core Team (2024) *R: A language and environment for statistical computing*. Vienna: R Foundation for Statistical Computing. Available at: <https://www.R-project.org/> (Accessed: 13 May 2026).
+
+StatsBomb (2024) *StatsBomb Open Data* \[online\]. Available at: <https://github.com/statsbomb/open-data> (Accessed: 13 May 2026).
+
+Wickham, H. (2016) *ggplot2: Elegant graphics for data analysis*. New York: Springer. Available at: <https://ggplot2.tidyverse.org> (Accessed: 13 May 2026).
