@@ -141,7 +141,7 @@ Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing on
 #| label: tbl-ivory_coast_timeline
 #| tbl-cap: "Côte d'Ivoire's match by match results across AFCON"
 
-readRDS("ivory_coast_timeline.rds") |> knitr::kable()
+readRDS("app/ivory_coast_timeline.rds") |> knitr::kable()
 
 
 ```
@@ -154,7 +154,7 @@ The underlying data from these matches tell us a different story. As shown in \@
 #| fig-cap: "A graph highlighting the cumulative xG of Ivory Coast through each stage of the tournament"
 #| fig-width: 10
 #| fig-height: 4
-readRDS("cuumulative_ivorycoast_xgplot.rds")
+readRDS("app/cuumulative_ivorycoast_xgplot.rds")
 ```
 
 ### [The Managerial Change: The introduction of Emerse Faé]{.underline}
@@ -175,7 +175,7 @@ In contrast, under Jean-Louis Gasset the shot distance is noticeably wider and m
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
-readRDS("manager_comparison_shotmap.rds")
+readRDS("app/manager_comparison_shotmap.rds")
 ```
 
 #### [Shot Quality vs Quantity]{.underline}
@@ -186,7 +186,7 @@ The shot quality data shown in @tbl-shot-quality-vs-quantity formalises what the
 #| label: tbl-shot-quality-vs-quantity
 #| tbl-cap: "Shot Quality vs Quantity Comparison by Manager"
 #| echo: false
-readRDS("shotquality_vs_quantity.rds") |> knitr::kable()
+readRDS("app/shotquality_vs_quantity.rds") |> knitr::kable()
 ```
 
 The difference in shot on target percentage is huge, as Faé's team has an average of 31.4% and Gasset's has an average of 19.6%. This means that nearly one third of shots by Faé's team tested the goalkeeper, while fewer than one in five did so under Gasset. An interesting contrast emerges between shot quantity and quality as Gasset's team attempted more shots but produced a lower shot on target percentage, lower average xG per shot, fewer goals and a lower total xG. This suggests that a higher shooting volume did not translate into higher attacking performance.
@@ -203,7 +203,7 @@ In contrast, under Faé, there was a slight improvement. Even though they conced
 #| label: ivorycoast-managers-shotsconceded-xgagainst
 #| tbl-cap: "Ivory Coast Shots Conceded and xG Against Table"
 #| echo: false
-readRDS("ivorycoast_managers_shotsconceded_xgagainst.rds") |> knitr::kable()
+readRDS("app/ivorycoast_managers_shotsconceded_xgagainst.rds") |> knitr::kable()
 ```
 
 Furthermore, the defensive metrics used have reinforced the improvement in their structure. There has been a rise in tackles from 14.3 to 19.5, suggesting that they have gained more success in tackles and are defending more as a unit. This can be linked to pressures which has also increased from 104 to 141.8 per game. This indicates that there has been a change in intensity, with a more aggressive approach which allows them to turnover possession high, and start a counter attack using their quick wingers. Duels per game have also increased from 26.7 to 36.5, which reflects a more physical approach in contests and ball winning situations in midfield and defense. Interceptions have increased from 6.3 to 7.8 per game which indicates that there has been an increased focus on closing down spaces and blocking passing lanes. Finally, clearances have increased from 11 to 26 per game which suggests that the defenders are prioritising clearing the ball away from dangerous situations rather than keep it in the attacking zones.
@@ -212,7 +212,7 @@ Furthermore, the defensive metrics used have reinforced the improvement in their
 #| label: defensive-actions-manager-comparison
 #| tbl-cap: "Defensive Actions between Managers"
 #| cho: false
-readRDS("defensive_actions_manager_comparison.rds") |> knitr::kable()
+readRDS("app/defensive_actions_manager_comparison.rds") |> knitr::kable()
 ```
 
 #### [Passing Structure]{.underline}
@@ -225,7 +225,7 @@ readRDS("defensive_actions_manager_comparison.rds") |> knitr::kable()
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
-readRDS("passing_heatmap.rds")
+readRDS("app/passing_heatmap.rds")
 ```
 
 Both heat maps are very similar with very high concentration in deeper and wider areas. This is further supported by the @tbl-progressive-metrics which illustrates the full backs were very influential in progressive passes. The central concentration is higher under Faé, suggesting that the midfielders were receiving the ball in more advanced areas, suggesting a more attacking approach.
@@ -240,7 +240,7 @@ Both heat maps are very similar with very high concentration in deeper and wider
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
-readRDS("dribble_manager_comparison_plot.rds")
+readRDS("app/dribble_manager_comparison_plot.rds")
 ```
 
 Under Faé, the dribble areas are heavily concentrated on the wide areas, with it being spread on both sides of the pitch. It is also very concentrated centrally just outside the box. This suggests that the majority of the dribbling was used as a way to break into dangerous areas, especially targeting the penalty area and isolating the fullbacks on both wings.
@@ -260,7 +260,7 @@ Under Gasset, there are very similar dribbling patterns where the wing areas hav
 #| fig-width: 10
 #| fig-height: 4
 
-readRDS("final_shotmap.rds")
+readRDS("app/final_shotmap.rds")
 
 ```
 
@@ -274,7 +274,7 @@ Overall, it appears from the shot maps that Ivory Coast had a well organised at
 #| label: tbl-combined-goals-and-assists
 #| tbl-cap: "Combined Goals and Assists Table"
 #| echo: false
-readRDS("combined_goals_and_assists.rds") |> knitr::kable()
+readRDS("app/combined_goals_and_assists.rds") |> knitr::kable()
 
 ```
 
@@ -289,7 +289,7 @@ From this goals and assists table, we can see that the goals have been spread ac
 #| fig-width: 10
 #| fig-height: 4
 
-readRDS("top5_dribble_heatmap.rds")
+readRDS("app/top5_dribble_heatmap.rds")
 ```
 
 The dribbling heat maps show that Ivory Coast relied heavily on wide attacking dribbles. Oumar Diakité, Jean-Philippe Krasso and Simon Adingra are the three players with the highest concentration in the wider areas. This further supports the point that they relied on wing play to attack the opponent and pin them back.
@@ -308,7 +308,7 @@ Overall, the table highlights that their defensive strength came from the effect
 #| label: defensive-stats
 #| tbl-cap: "Ivory Coast Defensive stats by players"
 #| echo: false
-readRDS("defensive_stats.rds") |> head(5) |> knitr::kable()
+readRDS("app/defensive_stats.rds") |> head(5) |> knitr::kable()
 
 ```
 
@@ -320,7 +320,7 @@ readRDS("defensive_stats.rds") |> head(5) |> knitr::kable()
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
-readRDS("top5_passers_heatmap.rds")
+readRDS("app/top5_passers_heatmap.rds")
 
 ```
 
@@ -338,7 +338,7 @@ There is a huge reliance on the fullbacks in buildup with Konan, Aurier and Sing
 #| label: tbl-progressive-metrics
 #| tbl-cap: "Ivory Coast Progressive Metrics"
 #| echo: false
-readRDS("attacking_metrics.rds") |> head(5) |> knitr::kable()
+readRDS("app/attacking_metrics.rds") |> head(5) |> knitr::kable()
 
 ```
 
@@ -350,7 +350,7 @@ A metric was created to determine who deserved to win the tournament. A weightin
 #| label: tbl-deserved-winner-tournament
 #| tbl-cap: "Tournament's Deserved Winner"
 #| echo: false
-readRDS("deserved_winner_tournament.rds") |> head(5) |> knitr::kable()
+readRDS("app/deserved_winner_tournament.rds") |> head(5) |> knitr::kable()
 ```
 
 The scores revealed that Ivory Coast did in fact deserve to win the tournament despite their poor Group Stage performance as their underlying metrics improved significantly across the tournament. Their transition from the inconsistent group of performers to a more efficient team in the knockout stages is reflected in the high attacking score. All round, they are the most consistent team across the four key attributes.
@@ -393,7 +393,7 @@ Nevertheless, the raw data points to the conclusion that Ivory Coast won because
 
 {{< pagebreak >}}
 
-## List of AI tool used 
+## List of AI tool used
 
 -   Claude (Anthropic, 2025) . Claude.
 
