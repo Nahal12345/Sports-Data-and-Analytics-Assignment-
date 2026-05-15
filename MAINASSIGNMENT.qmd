@@ -4,7 +4,6 @@ author: "Arjan Nahal (201570800)"
 date: today
 format:
   pdf:
-    pdf-engine: xelatex
     toc: true
     lof: true
     lot: true
@@ -34,58 +33,58 @@ format:
 
 ## [Introduction]{.underline}
 
-AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerese Faé, who was the Ivory Coast under 23 coach.
+AFCON 2023 was hosted in Côte d'Ivoire (Ivory Coast), and it saw the hosts lift the title. This victory was remarkable not just because it was a home tournament, but the team were on the brink of elimination during the group stage. After their win in the first game, Ivory Coast followed that by losing two consecutive games to Nigeria and Equatorial Guinea which saw them finish in 3rd place, narrowly qualifying due to them being the 4th best 3rd place finishers. Due to this failure in the group stage, the Ivorian Football Federation took the decision to sack the head coach Jean-Louis Gasset and replace him with Emerse Faé, who was the Ivory Coast under 23 coach.
 
-Following this there was an unexpected revival, with Ivory Coast which led to AFCON victory. Faé's side beat Senegal in the Round of 16, Mali in the Quarter Final, Democratic Republic of Congo in the Semi Final, and then defeated Nigeria in the final, which was one of the team's that they had previously lost to in the group stage. They didn't only just beat them, they beat them convincingly as they dominated the final. The transformation between the two managers was visible, but the question that this report seeks to answer is whether the data supports the outcome: How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and was it deserved?
+Following this there was an unexpected revival, with Ivory Coast which led to AFCON victory. Faé's side beat Senegal in the Round of 16, Mali in the Quarter Final, Democratic Republic of Congo in the Semi Final, and then defeated Nigeria in the final, which was one of the teams that they had previously lost to in the group stage. They did not just beat them, they beat them convincingly as they dominated the final. The transformation between the two managers was visible, but the question that this report seeks to answer is whether the data supports the outcome: How did Ivory Coast win AFCON 2023 despite sacking their manager during the Tournament, and was it deserved?
 
-The question is interesting because football tournaments can be won due to pure luck and individual brilliance whilst also posting poor underlying numbers. On the contrast, a dominant team can lose to a single moment . Expected Goals (xG), defensive action metrics, attacking metrics and shot quality data offers a way to cut through the narrative and allows us to analyse what exactly is happening with the players on the pitch.
+The question is interesting because football tournaments can be won due to pure luck and individual brilliance whilst also posting poor underlying numbers. In contrast, a dominant team can lose to a single moment . Expected Goals (xG), defensive action metrics, attacking metrics and shot quality data offers a way to cut through the narrative and allows us to analyse what exactly is happening with the players on the pitch.
 
-The dashboard and the accompanying analysis is structured around the comparison between the group stage performance under Jean-Louis Gasset and the Knockout Stage performance under Emerese Faé, which individual players drove the improvement, and underlying data suggesting whether the title was deserved. The data that has been used throughout this report was sourced from StatsBomb's open data repository, which has provided event-level data for the AFCON data. The dashboard is hosted publicly on GitHub Pages and built using R, ggplot2 and Plotly, with the full code available in the repository that has been linked.
+The dashboard and the accompanying analysis is structured around the comparison between the group stage performance under Jean-Louis Gasset and the Knockout Stage performance under Emerse Faé, which individual players drove the improvement, and underlying data suggesting whether the title was deserved. The data that has been used throughout this report was sourced from StatsBomb's open data repository, which has provided event-level data for the AFCON data. The dashboard is hosted publicly on GitHub Pages and built using R, \`ggplot\` and \`Plotly\`, with the full code available in the repository that has been linked.
 
 ## [Data Collection and Preparation]{.underline}
 
 ### [Data Source]{.underline}
 
-All the data that has been used in the analysis was obtained from StatBomb's open data repository, which was computed into R via the statsbombr package (STATSBOMB REFERENCE). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted. This was downloaded by: devtools::install.github("statsbomb/StatsBombR").
+All the data that has been used in the analysis was obtained from StatsBomb's open data repository, which was computed into R via the \`statsbombr\` package (StatsBomb, 2024). This open data provided event level match data for AFCON, which allowed for extensive game by game analysis to be conducted. This was downloaded by: devtools::install.github("statsbomb/Stats
 
-The StatsBomb event data model captures every on the ball action in a match as its own event, each with a timestamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events. The three primary functions that were used to collect the data were "**FreeCompetitions()", "FreeMatches()" and "get.matchFree()". FreeCompetitions()** was used to retrieve the full list of available competitions and identified AFCON2023. To filter for this, the competition id was filtered using 1267. This allowed for the match data to be downloaded, which is where **FreeMatches()** was used. In order to pull event level data from the matches, **get.matchFree()** was used to return a database of every recorded event, such as shots, passes, dribbles and duels etc.
+The StatsBomb event data model captures every on the ball action in a match as its own event, each with a time stamp, location (expressed as an x,y coordinate on a 120 x 80 pitch), the player and the possession team involved, and many more action specific events. The three primary functions that were used to collect the data were \`FreeCompetitions()\`, \`FreeMatches()\` and \`get.matchFree()\`. \`FreeCompetitions()\` was used to retrieve the full list of available competitions and identified AFCON2023 (StatsBomb, 2024). To filter for this, the competition id was filtered using 1267. This allowed for the match data to be downloaded, which is where \`FreeMatches()\` was used. In order to pull event level data from the matches, \`get.matchFree()\` was used to return a database of every recorded event, such as shots, passes, dribbles and duels etc.
 
 ### [Dataset structure and coverage]{.underline}
 
 The final merged dataset consisted of all 52 AFCON 2023 matches. The event level data frame consisted of 162,910 rows across all matches, with each row representing a single recorded event. The key variables used in this research were:
 
-| Variable               | Type      | Description                    |
-|------------------------|-----------|--------------------------------|
-| match_id               | Integer   | Unique match identifier        |
-| competition_stage.name | Character | Round of competition           |
-| team.name              | Character | Team Name                      |
-| type.name              | Character | Event type                     |
-| shot.statsbomb_xg      | Double    | Expected goals value           |
-| shot.outcome_name      | Character | Shot result                    |
-| player.name            | Character | Full player name               |
-| location               | List      | x,y coordinates on the pitch   |
-| minute/second          | Integer   | Event timestamp                |
-| possession_team.name   | Character | Team in possession             |
-| duel.type.name         | Character | Type of duel occuring          |
-| pass.goal_assist       | Logial    | Whether the pass led to a goal |
+| Variable                   | Type      | Description                    |
+|----------------------------|-----------|--------------------------------|
+| \`match_id\`               | Integer   | Unique match identifier        |
+| \`competition_stage.name\` | Character | Round of competition           |
+| \`team.name\`              | Character | Team Name                      |
+| \`type.name\`              | Character | Event type                     |
+| \`shot.statsbomb_xg\`      | Double    | Expected goals value           |
+| \`shot.outcome_name\`      | Character | Shot result                    |
+| \`player.name\`            | Character | Full player name               |
+| \`location\`               | List      | x,y coordinates on the pitch   |
+| \`minute/second\`          | Integer   | Event time stamp               |
+| \`possession_team.name\`   | Character | Team in possession             |
+| \`duel.type.name\`         | Character | Type of duel occuring          |
+| \`pass.goal_assist\`       | Logical   | Whether the pass led to a goal |
 
-For Ivory Coast specifically, the **ivorycoast_matches** subset identified the seven matches that they played in. The events from these matches were filtered from **all_events** using the match_id to analyse specific matches. This allowed for specific event data to be pulled from their matches, and using **possession_team.name == "Côte d'Ivoire"** allowed for a more focused view on the team.
+For Ivory Coast specifically, the \`ivorycoast_matches\` subset identified the seven matches that they played in. The events from these matches were filtered from all_events using the \`match_id\` to analyse specific matches. This allowed for specific event data to be pulled from their matches, and using \`possession_team.name == "Côte d'Ivoire"\` allowed for a more focused view on the team.
 
-One important structural decision that was required to be made was the exclusion of **"period ==5",** which corresponds to a penalty shootout in Statsbomb databases. This was done as the penalty shootout goals, shots and xG were being included into the overall shot and goal analysis. Including these events would have altered the results, as penalty shootouts occur outside of normal time, therefore they do not represent in game performance in the same way that the regular event data does. Penalties carry a very high xG value, which would mean that when analysing the cumulative xG for Ivory Coast throughout the tournament, the penalty shootout vs Senegal would have interfered with the data collection.
+One important structural decision that was required to be made was the exclusion of "period ==5", which corresponds to a penalty shootout in Statsbomb databases. This was done as the penalty shootout goals, shots and xG were being included into the overall shot and goal analysis. Including these events would have altered the results, as penalty shootouts occur outside of normal time, therefore they do not represent in game performance in the same way that the regular event data does. Penalties carry a very high xG value, which would mean that when analysing the cumulative xG for Ivory Coast throughout the tournament, the penalty shootout vs Senegal would have interfered with the data collection.
 
 ### [Cleaning and Preparation]{.underline}
 
 Before any of the metrics were computed, data cleaning and preparation steps were applied to ensure that the raw data was suitable for the analysis that was being prepared.
 
-Spatial coordinates in the StatsBomb dataset are stored a list columns rather than standard numeric vectors, with each of the event data's location being represented by an x and y value. For the simple extractions, "sapply" was used to pull the first and second elements of each location list. For the larger extractions where columns could contain empty entries, "map_dbl" was used to to substitute NA where the coordinates were missing. This ensured that any missing coordinate values did not cause any incorrect results within the analysis.
+Spatial coordinates in the StatsBomb dataset are stored as list columns rather than standard numeric vectors, with each of the event data's location being represented by an x and y value. For the simple extractions, \`sapply\`was used to pull the first and second elements of each location list. For the larger extractions where columns could contain empty entries, \`map_dbl\` was used to substitute NA where the coordinates were missing. This ensured that any missing coordinate values did not cause any incorrect results within the analysis.
 
-Shot outcomes were recoded from StatsBombs's categories into four different outcomes to be used across the shot maps. To keep the shot maps clean and readable, outcomes such as 'Saved to Post' were deliberately combined into 'Saved' rather than keeping it as it's own outcome. The four outcomes used were 'Saved', 'Blocked', 'Off Target' and 'Goal'. Shots were also filtered to exclude 'period 5' , which represents the penalty shootout. Including shots from penalty shootouts would have distorted the shot location data, as it would have inflated shot totals without affecting in game events.
+Shot outcomes were recoded from StatsBomb's categories into four different outcomes to be used across the shot maps. To keep the shot maps clean and readable, outcomes such as 'Saved to Post' were deliberately combined into 'Saved' rather than keeping it as it's own outcome. The four outcomes used were 'Saved', 'Blocked', 'Off Target' and 'Goal'. Shots were also filtered to exclude 'period 5' , which represents the penalty shootout. Including shots from penalty shootouts would have distorted the shot location data, as it would have inflated shot totals without affecting in game events.
 
-A binary manager variable was created directly from "competition_stage.name", which assigned the Group Stage matches to Jean-Louis Gasset and the Knockout Stage to Emerse Faé. This allowed for a direct comparison between the managers across each metric in the dashboard without having to go game by game. It meant that every match was assigned to the correct manager in the same way across every single section of the analysis.
+A binary manager variable was created directly from \`competition_stage.name\`, which assigned the Group Stage matches to Jean-Louis Gasset and the Knockout Stage to Emerse Faé. This allowed for a direct comparison between the managers across each metric in the dashboard without having to go game by game. It meant that every match was assigned to the correct manager in the same way across every single section of the analysis.
 
 ### [Limitations of the Data]{.underline}
 
-There are certain limitations of the data set which affected the research. Firstly, the Statsbomb open data does not include tracking data (player positions in between the events), which limits the amount of off the ball metrics. This includes the pressing intensity and the overall defensive structure. Linking to this, the xG model used will not take underlying metrics such as pressure on the attacker, or how close the defender is, meaning the calculated xG values may not fully reflect the true quaility and difficulty of the chance. Some of the results may be overvalued and some may be undervalued compared to the actual context of the shot.
+There are certain limitations of the dataset which affected the research. Firstly, the Statsbomb open data does not include tracking data (player positions in between the events), which limits the amount of off the ball metrics. This includes the pressing intensity and the overall defensive structure. Linking to this, the xG model used will not take underlying metrics such as pressure on the attacker, or how close the defender is, meaning the calculated xG values may not fully reflect the true quality and difficulty of the chance. Some of the results may be overvalued and some may be undervalued compared to the actual context of the shot.
 
 The data does not take into account game state, meaning that events occurring when a team is winning, drawing or losing are all treated equally. This is a relevant limitation to the data because different circumstances in games cause different outcomes. For example, teams who are losing will take a lot more risks, which could lead to them taking more shots out of desperation, take more risks in passing and press higher up the pitch, which would inflate certain metrics. On the other hand, teams who are winning may not sit a lot deeper and concede more possession, therefore deflating their attacking metrics but inflate their defensive stats as they are inviting on pressure. For example, as Ivory Coast lost the first two games, it is possible that some of the metrics were impacted by the fact that they were chasing the game, which would have inflated their stats. Whereas with Faé, in the game against Mali they had a player who was sent off, meaning they were under a lot of pressure from the opposing team. Therefore, the defensive stats would be increasingly inflated because of this.
 
@@ -93,9 +92,9 @@ The data does not take into account game state, meaning that events occurring wh
 
 ### [Going from raw data to dashboard]{.underline}
 
-Once the binary variables were created, it allowed for all the metrics, visualisations and tables to be split between each managerial era consistently. All the data was seperated into their own figures, graphs and tables and then saved individually as RDS files using "saveRDS()". This meant that the dashboard was able to load the data using "readRDS()". This meant that instead of the dashboard having to process the raw data every time, it was able to simply read the pre-saved outputs. This was an important decision as it kept the dashboard running smoothly and avoided any issues in loading the data.
+Once the binary variables were created, it allowed for all the metrics, visualisations and tables to be split between each managerial era consistently. All the data was separated into their own figures, graphs and tables and then saved individually as RDS files using \`saveRDS()\`. This meant that the dashboard was able to load the data using \`readRDS()\`. This meant that instead of the dashboard having to process the raw data every time, it was able to simply read the pre-saved outputs. This was an important decision as it kept the dashboard running smoothly and avoided any issues in loading the data.
 
-The visualisations were built using "ggplot2" first before being made interactive. This was done using "ggplotly", which allowed for the shot maps to have more analytical information attached to them (player name, xG, minute and outcome). The passing and dribbling heatmaps were kept as static renderPlot() as they only showed aggregate density patterns which did not need to be interactive. There were issues with "ggplotly" with "final_shotmap.rds", which meant that a change back to a static plot was needed. They were then processed into Shinylive, where the dashboard was created. Once this was done, it was able to be deployed publicly on GitHub Pages.
+The visualisations were built using "ggplot2" first before being made interactive. This was done using \`ggplotly\`, which allowed for the shot maps to have more analytical information attached to them (player name, xG, minute and outcome). The passing and dribbling heat maps were kept as static \`renderPlot()\` as they only showed aggregate density patterns which did not need to be interactive. There were issues with \`ggplotly\` with \`final_shotmap.rds\`, which meant that a change back to a static plot was needed. They were then processed into Shinylive, where the dashboard was created. Once this was done, it was able to be deployed publicly on GitHub Pages.
 
 ### [Metrics computed]{.underline}
 
@@ -123,19 +122,19 @@ For the deserved winner score, every per game metric was divided by the highest 
 
 ### [Dashboard Design]{.underline}
 
-The dashboard was built in R Shiny using the 'bslib' R package to apply the themes and the custom background colour. The home page displays the research question at the top and has the four large navigation buttons which contain each piece of analysis. The four navigation buttons were 'Tournament Journey', 'Before and After Manager Sacking', 'Key Players' and 'Was It Deserved?'. Each had its own colour which makes it easier to distinguish between the sections.
+The dashboard was built in R Shiny using the \`bslib\` R package to apply the themes and the custom background colour. The home page displays the research question at the top and has the four large navigation buttons which contain each piece of analysis. The four navigation buttons were 'Tournament Journey', 'Before and After Manager Sacking', 'Key Players' and 'Was It Deserved?'. Each had its own colour which makes it easier to distinguish between the sections.
 
-The navigation between each of the panels is handled using "conditionalPanel()" blocks which show or hide each of the pages depending on which has been selected. 'ReactiveVal' stores which page is active, and a Javascript message handler updates it whenever something has been selected. This means that the pages are able to change smoothly without having to reload. Each page has it's own back button which allows for the user to go back to the home screen.
+The navigation between each of the panels is handled using \`conditionalPanel()\`blocks which show or hide each of the pages depending on which has been selected. \`ReactiveVal\` stores which page is active, and a Javascript message handler updates it whenever something has been selected. This means that the pages are able to change smoothly without having to reload. Each page has it's own back button which allows for the user to go back to the home screen.
 
-Within each of the pages, the analysis is split into different tabs using 'navset_pill()' to avoid unrelated information being placed in the same tabs. This meant that the analysis was in clean locations, and it would allow the user to find the exact information they need.
+Within each of the pages, the analysis is split into different tabs using \`navset_pill()\` to avoid unrelated information being placed in the same tabs. This meant that the analysis was in clean locations, and it would allow the user to find the exact information they need.
 
-Within the dashboard, 'renderPlotly()' and 'renderDT() were used so that the reactive graphs and tables were able to be interactive for the user. The shot map which compared the team's shots between each of the manager needed to be interactive so that the analysis would be evident within the map. For the table, it was made interactive so that the user can filter between each metric and see how was leading in each stat.
+Within the dashboard, \`renderPlotly()\`and \`renderDT()\` were used so that the reactive graphs and tables were able to be interactive for the user. The shot map which compared the team's shots between each of the manager needed to be interactive so that the analysis would be evident within the map. For the table, it was made interactive so that the user can filter between each metric and see how was leading in each stat.
 
 ## [Findings]{.underline}
 
 ### [Tournament Overview and the Group Stage Struggle]{.underline}
 
-Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. During the knockout stages, Ivory Coast won three games and drew one, which they won on penalties. They had performed at a much higher standard, and that will be analysed later in this section. Table x summarises Ivory Coast's full tournament timeline, showing who they had faced, what the score was and what the result of the game was.
+Across the whole tournament, Ivory Coast played 7 matches, winning 4, drawing one (won the game via a penalty shootout) and losing twice. Their two defeats came in the group stage where they lost to Nigeria 1-0 and Equatorial Guinea 4-0 in the final group stage game, which triggered the managerial change. During the knockout stages, Ivory Coast won three games and drew one, which they won on penalties. They had performed at a much higher standard, and that will be analysed later in this section. @tbl-ivory_coast_timeline summarises Ivory Coast's full tournament timeline, showing who they had faced, what the score was and what the result of the game was.
 
 ```{r}
 #| echo: false
@@ -147,12 +146,12 @@ readRDS("ivory_coast_timeline.rds") |> knitr::kable()
 
 ```
 
-The underlying data from these matches tell us a different story. As shown in Figure 1, Ivory Coast had a steady accumulation of xG in the group stage. Across the entire group stage, they accumulated 3.39 xG per game, which comes to an average of 1.13 per game. Taking the results into consideration, we can see that they produced inconsistent performances throughout the group stage, with the two defeats. Despite losing 4-0 in the last game to Equatorial Guinea, the team had generated 2.06 xG, which is more than the first two games combined. The lack of xG within those first two games indicate a lack of attacking creativity and a difficulty in producing high quality opportunities. The majority of shots that were created accumulated a lower amount of xG, therefore indicating the likelihood of scoring was low. However in the last game of the group stage, despite the result, they managed to create the chances but were not able to finish them off. This sharp defeat led to the managerial change, even though they narrowly progressed to the next stage.
+The underlying data from these matches tell us a different story. As shown in \@fig-cumulative-xG-chart, Ivory Coast had a steady accumulation of xG in the group stage. Across the entire group stage, they accumulated 3.39 xG per game, which comes to an average of 1.13 per game. Taking the results into consideration, we can see that they produced inconsistent performances throughout the group stage, with the two defeats. Despite losing 4-0 in the last game to Equatorial Guinea, the team had generated 2.06 xG, which is more than the first two games combined. The lack of xG within those first two games indicate a lack of attacking creativity and a difficulty in producing high quality opportunities. The majority of shots that were created accumulated a lower amount of xG, therefore indicating the likelihood of scoring was low. However in the last game of the group stage, despite the result, they managed to create the chances but were not able to finish them off. This sharp defeat led to the managerial change, even though they narrowly progressed to the next stage.
 
 ```{r}
 #| echo: false
-#| label: cumulative-xG-chart
-#| fig-cap: "A graph highliting the cumulative xG of Ivory Coast through each stage of the tournament"
+#| label: fig-cumulative-xG-chart
+#| fig-cap: "A graph highlighting the cumulative xG of Ivory Coast through each stage of the tournament"
 #| fig-width: 10
 #| fig-height: 4
 readRDS("cuumulative_ivorycoast_xgplot.rds")
@@ -164,14 +163,14 @@ The appointment of Emerse Faé was a surprise for many reasons. No one expected 
 
 #### [Shot Map and Attacking Locations]{.underline}
 
-The shot maps in Figure 2 offer the clearest immediate illustration of how the team's attacking intent had changed.
+The shot maps in @fig-manager-comparison-shotmap offer the clearest immediate illustration of how the team's attacking intent had changed.
 
 Under Emerse Faé, Ivory Coast's shots appear to be more centrally concentrated inside and around the penalty area. a large proportion of these shots came in a dangerous area, which therefore gave them a higher chance of scoring. This suggests that there was a more direct attacking structure, which was focused on creating higher quality opportunities in central areas for their attackers. Additionally, the concentration of attacks near the goal indicates that they were frequently able to progress possession in advanced areas, whilst being able to finish the attacks (scoring or missing the chance).
 
 In contrast, under Jean-Louis Gasset the shot distance is noticeably wider and more dispersed across the box. There are more attempts from wider angles, which the StatsBomb xG model assigns that the probability of those chances to be below 0.1. Goals were rare for the team under Gasset, and the two goals that they scored came from chances accumulating 0.075 xg and 0.056 xg respectively.
 
 ```{r}
-#| label: manager-comparison-shotmap
+#| label: fig-manager-comparison-shotmap
 #| fig-cap: "Comparison Between The Two Managers' Shot Maps"
 #| echo: false
 #| fig-width: 10
@@ -181,24 +180,24 @@ readRDS("manager_comparison_shotmap.rds")
 
 #### [Shot Quality vs Quantity]{.underline}
 
-The shot quality data shown in Table X formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an average of 0.074 xG per shot. They had a shot on target percentage of 19.6%, with only 9 of their 46 shots being on target. Even though Jean-Louis Gasset's team averaged more shots per game, their output was far less effective. Faé's team scored 6 goals from their 51 shots, whereas Gasset's team ony scored 2 from 46. These low amount of goals may not seem a lot, however, tournament football does not always provide high scoring games when teams of similar level play not to lose rather than win. There is a clear difference between avg xG per shot, where Fae's team averaged 0.083 per shot compared to Gasset's 0.074. On the surface level the difference may not seem that large, however over a large amount of shots it reflects a meaningful improvement in shot quality. This further supports the shotmap illustrating that the shots under Faé were in more dangerous areas.
+The shot quality data shown in @tbl-shot-quality-vs-quantity formalises what the map shows in data form, illustrating a clear contrast between the two managers. Under Gasset, Ivory Coast averaged 15.3 shots per game at an average of 0.074 xG per shot. They had a shot on target percentage of 19.6%, with only 9 of their 46 shots being on target. Even though Jean-Louis Gasset's team averaged more shots per game, their output was far less effective. Faé's team scored 6 goals from their 51 shots, whereas Gasset's team only scored 2 from 46. These low amount of goals may not seem a lot, however, tournament football does not always provide high scoring games when teams of similar level play not to lose rather than win. There is a clear difference between avg xG per shot, where Faé's team averaged 0.083 per shot compared to Gasset's 0.074. On the surface level the difference may not seem that large, however over a large amount of shots it reflects a meaningful improvement in shot quality. This further supports the shot map illustrating that the shots under Faé were in more dangerous areas. \`
 
 ```{r}
-#| label: shot-quality-vs-quantity
+#| label: tbl-shot-quality-vs-quantity
 #| tbl-cap: "Shot Quality vs Quantity Comparison by Manager"
 #| echo: false
 readRDS("shotquality_vs_quantity.rds") |> knitr::kable()
 ```
 
-The difference in shot on target percentage is huge, as Faé's team has an average of 31.4% and Gasset's has an average of 19.6%. This means that nearly one third of shots bt Faé's team tested the goalkeeper, while fewer than one in five did so under Gasset. An interesting contrast emerges between shot quantity and quality as Gasset's team attempted more shots but produced a lower shot on target percentage, lower average xG per shot, fewer goals and a lower total xG. This suggets that a higher shooting volume did not translate into higher attacking performance.
+The difference in shot on target percentage is huge, as Faé's team has an average of 31.4% and Gasset's has an average of 19.6%. This means that nearly one third of shots by Faé's team tested the goalkeeper, while fewer than one in five did so under Gasset. An interesting contrast emerges between shot quantity and quality as Gasset's team attempted more shots but produced a lower shot on target percentage, lower average xG per shot, fewer goals and a lower total xG. This suggests that a higher shooting volume did not translate into higher attacking performance.
 
-Overall, the table suggests that Ivory Coast were a more clinical and structually efficient attacking side under Faé. Although Gasset's team had generated more shots in less games, they were lower in xG, suggesting the shots were taken with more pressure and in positions that are less likely to test the goalkeeper. In contrast, Fae's team created higher quality chances, tested the goalkeeper more frequently and converted their chances more efficiently.
+Overall, the table suggests that Ivory Coast were a more clinical and structurally efficient attacking side under Faé. Although Gasset's team had generated more shots in less games, they were lower in xG, suggesting the shots were taken with more pressure and in positions that are less likely to test the goalkeeper. In contrast, Fae's team created higher quality chances, tested the goalkeeper more frequently and converted their chances more efficiently.
 
 #### [Shots Conceded and xG Against and Defensive Actions]{.underline}
 
-The data suggests that there was a clear improvement in defensive perfomance following the managerial change. Under Gasset, Ivory Coast conceded more shots per game, and xG per shot with 10.3 shots per game and 1.07 xG per shot. This indicates that they had a vulnerable defensive structure due to the higher amount of high quality chances that they conceded.
+The data suggests that there was a clear improvement in defensive performance following the managerial change. Under Gasset, Ivory Coast conceded more shots per game, and xG per shot with 10.3 shots per game and 1.07 xG per shot. This indicates that they had a vulnerable defensive structure due to the higher amount of high quality chances that they conceded.
 
-In contrast, under Faé, there was a slight improvement. Even though they conceded more xG and more shots, the average for both were lower as their shots conceded per game was 9 and 0.93 xG per shot. This illustrates that they restructed their opponents to lower quality chances, relecting a more organised and resilient structure.
+In contrast, under Faé, there was a slight improvement. Even though they conceded more xG and more shots, the average for both were lower as their shots conceded per game was 9 and 0.93 xG per shot. This illustrates that they restructured their opponents to lower quality chances, reflecting a more organised and resilient structure.
 
 ```{r}
 #| label: ivorycoast-managers-shotsconceded-xgagainst
@@ -218,11 +217,11 @@ readRDS("defensive_actions_manager_comparison") |> knitr::kable()
 
 #### [Passing Structure]{.underline}
 
-Figue X shows compares heat maps of passes under each manager.
+Figure 3 compares heat maps of passes under each manager.
 
 ```{r}
 #| label: passing_heatmap
-#| fig-cap: "Passing Heatmap Comparison By Managaer"
+#| fig-cap: "Passing Heatmap Comparison By Manager"
 #| echo: false
 #| fig-width: 10
 #| fig-height: 4
@@ -233,7 +232,7 @@ Both heat maps are very similar with very high concentration in deeper and wider
 
 #### [Dribble Areas]{.underline}
 
-Figure X compares Ivory Coast's dribble density under each managers.
+Figure 4 compares Ivory Coast's dribble density under each manager.
 
 ```{r}
 #| label: dribble-manager-comparison-plot
@@ -246,13 +245,13 @@ readRDS("dribble_manager_comparison_plot.rds")
 
 Under Faé, the dribble areas are heavily concentrated on the wide areas, with it being spread on both sides of the pitch. It is also very concentrated centrally just outside the box. This suggests that the majority of the dribbling was used as a way to break into dangerous areas, especially targeting the penalty area and isolating the fullbacks on both wings.
 
-Under Gasset, there are very similar dribbling patterns where the wing areas gave been targeted. However the major difference is the overreliance on one side. With Faé, there is high concentration on both sides, whereas under Gasset, they were only mainly targeting one side of the pitch.
+Under Gasset, there are very similar dribbling patterns where the wing areas have been targeted. However the major difference is the overreliance on one side. With Faé, there is high concentration on both sides, whereas under Gasset, they were only mainly targeting one side of the pitch.
 
 ### [Key player contributions]{.underline}
 
 #### [Shot Map]{.underline}
 
-Figure X below illustrates the shot maps of the top five shooters for Ivory Coast.
+Figure 5 below illustrates the shot maps of the top five shooters for Ivory Coast.
 
 ```{r}
 #| label: final-shotmap
@@ -265,21 +264,21 @@ readRDS("final_shotmap.rds")
 
 ```
 
-As shown, Sébastian Haller's shots are heavily concentrated very close to the goals, which highlights his role as the main striker and the main focal point for all the attacks. In contrast, we can see that the midfielders, Franck Kessie and Seko Fofana shower a much wider distribution of shots, as they are attemptimng shots from outside the box whilst also taking shots within the box. This indicates that they are making late runs into the box. Krasso also has shots in central areas as he was used as a backup striker to Haller. Evan Ndicka's limited amount of shots likely came from set piece situations.
+As shown, Sébastien Haller's shots are heavily concentrated very close to the goals, which highlights his role as the main striker and the main focal point for all the attacks. In contrast, we can see that the midfielders Franck Kessie and Seko Fofana show a much wider distribution of shots, as they are attempting shots from outside the box whilst also taking shots within the box. This indicates that they are making late runs into the box. Krasso also has shots in central areas as he was used as a backup striker to Haller. Evan Ndicka's limited amount of shots likely came from set piece situations.
 
 Overall, it appears from the shot maps that Ivory Coast had a well organised attacking strategy with distinct player responsibilities. A focus on effective opportunity generation and attacking via the middle of the pitch is indicated by the concentration of shots through dangerous central areas.
 
 #### [Goals and Assists]{.underline}
 
 ```{r}
-#| labels: fig-combined-goals-and-assists
+#| label: tbl-combined-goals-and-assists
 #| tbl-cap: "Combined Goals and Assists Table"
 #| echo: false
 readRDS("combined_goals_and_assists.rds") |> knitr::kable()
 
 ```
 
-From this goals and assists table, we can see that the goals have been spread the team, as no player has scored more than two goals. Franck Kessié and Simon Adingra recorded the highest amount of goal contributions with three each, which highlights their importance in both chance creation and goal scoring. Overall, the table shows that the team was very balanced in attack, and they did not have to rely on one singular player.
+From this goals and assists table, we can see that the goals have been spread across the team, as no player has scored more than two goals. Franck Kessié and Simon Adingra recorded the highest amount of goal contributions with three each, which highlights their importance in both chance creation and goal scoring. Overall, the table shows that the team was very balanced in attack, and they did not have to rely on one singular player.
 
 #### [Dribbling Heat Maps]{.underline}
 
@@ -293,13 +292,13 @@ From this goals and assists table, we can see that the goals have been spread th
 readRDS("top5_dribble_heatmap.rds")
 ```
 
-The dribbling heat maps show that Ivory Coast relied heavily on wide attacking dribbles. Oumar Diakité, Jean-Phillipe Krasso and Simon Adingra are the three players with the highest concentration in the wider areas. This further supports the point that they relied on wing play to attack the opponent and pin them back.
+The dribbling heat maps show that Ivory Coast relied heavily on wide attacking dribbles. Oumar Diakité, Jean-Philippe Krasso and Simon Adingra are the three players with the highest concentration in the wider areas. This further supports the point that they relied on wing play to attack the opponent and pin them back.
 
 In contrast, we have Seko Fofana who plays in midfield meaning his dribbling concentration is more central. He used his dribbles to connect the defense and the attack, and progress the ball through midfield. Ghislain Konan showed deeper and wider dribbling on the left side of defense, which illustrated his importance in helping the team relieve pressure by dribbling out of tough situations.
 
 #### [Defensive stats]{.underline}
 
-The defensive data highlights that Kessié and Seri were the most efficient defensive midfielders. Kessié recorded a very strong tackle success rate at 83.3% whilst Seri recorded 80%. These were both from a high number of tackles meaning that they were very effiicient in the defensive roles that had been set for them. Sangaré also contributed massively, not only with tackles. All round he was a very solid defensive midfielder which allowed the attackers freedom to play.
+The defensive data highlights that Kessié and Seri were the most efficient defensive midfielders. Kessié recorded a very strong tackle success rate at 83.3% whilst Seri recorded 80%. These were both from a high number of tackles meaning that they were very efficient in the defensive roles that had been set for them. Sangaré also contributed massively, not only with tackles. All round he was a very solid defensive midfielder which allowed the attackers freedom to play.
 
 In the wider defensive areas, both Konan and Singo were involved in a large number of duels and recoveries. Both recorded rather low percentages for their duels won, however, they both excelled at other areas such as interceptions and clearances. The low percentage duels won indicate they were facing difficult one on one situations.
 
@@ -309,7 +308,7 @@ Overall, the table highlights that their defensive strength came from the effect
 #| label: defensive-stats
 #| tbl-cap: "Ivory Coast Defensive stats by players"
 #| echo: false
-readRDS("defensive_stats.rds") |> knitr::kable()
+readRDS("defensive_stats.rds") |> head(5) |> knitr::kable()
 
 ```
 
@@ -329,17 +328,17 @@ The passing heat maps indicate that Ivory Coast's buildup play was heavily conce
 
 Distribution from the flanks was also important for Ivory Coast with Singo and Konan both having high concentration in wide areas. The teams use of fullbacks to support buildup allowed them to maintain width in attacks. Furthermore, Evan Ndicka had a huge role in progression as the high concentration suggests he had a key role in starting attacks.
 
-#### [Attacking Stats]{.underline}
+#### [Progressive Stats]{.underline}
 
-This attacking data table highlights that Seko Fofana is one of the most influential offensive players. He ranks highly in four out of the 6 metrics, with only progressive passing and box entries being his week points. Simon Adingra and Oumar Diakaté both played major roles in attacks, with high amounts of in all metrics apart from progressive passes which indicates that they are always on the receiving end of progressive passes.
+This attacking data table highlights that Seko Fofana is one of the most influential offensive players. He ranks highly in four out of the 6 metrics, with only progressive passing and box entries being his weak points. Simon Adingra and Oumar Diakaté both played major roles in attacks, with high amounts of in all metrics apart from progressive passes which indicates that they are always on the receiving end of progressive passes.
 
 There is a huge reliance on the fullbacks in buildup with Konan, Aurier and Singo who have high entries into and touches in the final 3rd, with a huge amount of progressive passes. This further indicates that there was a huge reliance on width, and the players involved supported efficiently.
 
 ```{r}
 #| label: attacking-metrics
-#| tbl-cap: "Ivory Coast Attacking Metrics"
+#| tbl-cap: "Ivory Coast Progressive Metrics"
 #| echo: false
-readRDS("attacking_metrics.rds") |> knitr::kable()
+readRDS("attacking_metrics.rds") |> head(5) |> knitr::kable()
 
 ```
 
@@ -349,10 +348,10 @@ A metric was created to determine who deserved to win the tournament. A weightin
 
 ```{r}
 #| echo: false
-readRDS("deserved_winner_tournament.rds")
+readRDS("deserved_winner_tournament.rds") |> head(5) |> knitr::kable()
 ```
 
-The scores revealed that Ivory Coast did infact deserve to win the tournament despite their poor Group Stage performance as their underlying metrics improved significantly across the tournament. Their transition from the inconsistent group of performers to a more efficient team in the knockout stages is reflected in the high attacking score. All round, they are the most consistent team across the four key attributes.
+The scores revealed that Ivory Coast did in fact deserve to win the tournament despite their poor Group Stage performance as their underlying metrics improved significantly across the tournament. Their transition from the inconsistent group of performers to a more efficient team in the knockout stages is reflected in the high attacking score. All round, they are the most consistent team across the four key attributes.
 
 Nigeria who also got to the final are in third place, suggesting that Ivory Coast's win in the final was deserved. While Nigeria were more consistent throughout the tournament, Ivory Coast's effective knockout stage, tied with the weighting of reaching the final, allowed for them to finish at the top of this chart.
 
@@ -362,13 +361,13 @@ Interestingly, Egypt ranked second in this chart despite finishing in the Round 
 
 ### [Implication of the Findings]{.underline}
 
-The findings reveal that the managerial change from Gasset to Faé had a measurable impact on Ivory Coast's underlying performance metrics rather than just the results. There was an improvement in their shot quality as their xG per shot had risen from 0.074 to 0.083. Even though it is a small increase, over an increase number of shots, the margin becomes bigger and bigger. This combined with the increase shot on target percentage rose from 19.6% to 31.4%, suggesting that the team were not only creating better opportunities, they were also testing the goalkeeper a lot more. The defensive data also illustrates the improvement as the increase suggests that there was a structural change which solidified their team. The improvement in attacking and defensive metrics were key to them winning the tournament, and the managerial change helped manage that.
+The findings reveal that the managerial change from Gasset to Faé had a measurable impact on Ivory Coast's underlying performance metrics rather than just the results. There was an improvement in their shot quality as their xG per shot had risen from 0.074 to 0.083. Even though it is a small increase, over an increased number of shots, the margin becomes bigger and bigger. This combined with the increased shot on target percentage rose from 19.6% to 31.4%, suggesting that the team were not only creating better opportunities, they were also testing the goalkeeper a lot more. The defensive data also illustrates the improvement as the increase suggests that there was a structural change which solidified their team. The improvement in attacking and defensive metrics were key to them winning the tournament, and the managerial change helped manage that.
 
 The findings from this analysis have different implications for different audiences.
 
-Firstly for coaches and sporting directors, the data demonstrates that a change of manager during a tournament can produce improvements on the pitch and in underlying performances metrics. The improvement seen under Faé practically won Ivory Coast the tournament as they were on the brink of elimination under Gasset. these improvements were visible with teh results and multiple metrics, such as the shot locations became more central which led to an improvement in their shot quality. The dribbling and passing structures had shifted into more advanced areas of the pitch will indicates that they were had a more attacking structure and were creating more dangerous attacks. This on the field improvement could impact future decisions about whether making a managerial change during a competition will benefit or hinder the team involved.
+Firstly for coaches and sporting directors, the data demonstrates that a change of manager during a tournament can produce improvements on the pitch and in underlying performances metrics. The improvement seen under Faé practically won Ivory Coast the tournament as they were on the brink of elimination under Gasset. These improvements were visible with the results and multiple metrics, such as the shot locations became more central which led to an improvement in their shot quality. The dribbling and passing structures had shifted into more advanced areas of the pitch which indicates that they had a more attacking structure and were creating more dangerous attacks. This on the field improvement could impact future decisions about whether making a managerial change during a competition will benefit or hinder the team involved.
 
-For analysts, the dashboard provides offers a way of looking at ivory Coast's tournament performance beyond just their results and basic stats. The manager comparison section shows how event level data can be used to build a more compete analysis of how a team has performed. The data shows that Ivory Coast had an improvement after the managerial change, which in the end enabled them to win the competition. The shot metrics, defensive actions tables and the spatial heatmaps provide the analysts a level of detail which results based analysis cannot offer. This would allow analysts to pinpoint exactly where they have improved and what they can improve on. This kind of approach could easily be applied to other teams or competitions where the event level data is available for use. Whether it is assessing the impact of a tactical change during the season, analysing if a strong run of results is genuinely supported by the underlying performance data, or identifying which players are most important to a team’s overall structure and style of play, the same methodology used in this project could easily be adapted to explore those questions in a similarly effective way.
+For analysts, the dashboard offers a way of looking at Ivory Coast's tournament performance beyond just their results and basic stats. The manager comparison section shows how event level data can be used to build a more complete analysis of how a team has performed. The data shows that Ivory Coast had an improvement after the managerial change, which in the end enabled them to win the competition. The shot metrics, defensive actions tables and the spatial heat maps provide the analysts a level of detail which results based analysis cannot offer. This would allow analysts to pinpoint exactly where they have improved and what they can improve on. This kind of approach could easily be applied to other teams or competitions where the event level data is available for use. Whether it is assessing the impact of a tactical change during the season, analysing if a strong run of results is genuinely supported by the underlying performance data, or identifying which players are most important to a team’s overall structure and style of play, the same methodology used in this project could easily be adapted to explore those questions in a similarly effective way.
 
 ### [Limitations]{.underline}
 
@@ -378,8 +377,10 @@ Another limitation of the analysis is the deserved winner table. Even though the
 
 ### [Future Outlook]{.underline}
 
-There are several ways this analysis could be improved for future outlook. Firstly, with the access to additional data, StatsBomb's freeze frame data which records the positions of all the 22 players at the moment of each event would have allowed for a much more precise analysis (POTENTIAL REFERENCE). This would have enabled an analysis of the defensive shape and the quality of the shots in relation to where the defenders are positioned. This gives a clear picture of how dangerous the chance is, as shots where the attacker is surrounded by no one and one where they are under pressure are completely different. This is something that normal xG models cannot capture.
+There are several ways this analysis could be improved for future outlook. Firstly, with the access to additional data, StatsBomb's freeze frame data which records the positions of all the 22 players at the moment of each event would have allowed for a much more precise analysis (StatsBomb, 2024). This would have enabled an analysis of the defensive shape and the quality of the shots in relation to where the defenders are positioned. This gives a clear picture of how dangerous the chance is, as shots where the attacker is surrounded by no one and one where they are under pressure are completely different. This is something that normal xG models cannot capture.
 
 ### [Conclusion]{.underline}
+
+{{< pagebreak >}}
 
 ## References

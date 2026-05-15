@@ -41,7 +41,7 @@ ui <- fluidPage(
   # ── Home ──────────────────────────────────────────────────────────────────
   conditionalPanel(
     condition = "input.page == 'home' || input.page == undefined",
-    h1("AFCON 2023 — How Ivory Coast Won AFCON despite managerial change, and was it really deserved?",
+    h1("AFCON 2023 — how did Ivory Coast win AFCON 2023 despite sacking their manager during the tournament, and does the data back them up?",
        style = "color:white; text-align:center; padding:30px;"),
     fluidRow(
       column(3, actionButton("btn_journey",  "🏆 Tournament Journey",        width = "100%",
